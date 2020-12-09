@@ -105,15 +105,15 @@ public class Prototype_shooter extends OpMode
         if (A){
             shooterPower = 1;
         }
-        if (B){
+        else if (B){
             shooterPower = 0.75;
         }
-        if (Y){
+        else if (Y){
             shooterPower = 0.5;
         }
-        if (X){
+        else if (X){
             shooterPower = 0;
-        }
+        }else if (!B && !Y && !A)shooterPower = 0;
 
         shooter.setPower(shooterPower);
 
