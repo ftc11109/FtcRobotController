@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -51,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="prototype", group="Iterative Opmode")
-@Disabled
+//@Disabled
 public class DriveTrain_Protype extends OpMode
 {
     // Declare OpMode members.
@@ -75,6 +76,8 @@ public class DriveTrain_Protype extends OpMode
         rightDriveFront = hardwareMap.get(DcMotor.class, "right_driveF");
         leftDriveFront = hardwareMap.get(DcMotor.class, "left_driveF");
 
+        leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftDriveFront.setDirection(DcMotorSimple.Direction.REVERSE);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -102,7 +105,7 @@ public class DriveTrain_Protype extends OpMode
     //making the doubles for all stick input for easy telemety usage and the directional math
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.5; // the times adjustment is to adjust to lower speeds do lose of power doing anything but foward backwards motions
-        double rx = gamepad1.right_stick_x;
+        double rx = -gamepad1.right_stick_x;
 
         double leftFP = 0;
         double leftBP = 0;
