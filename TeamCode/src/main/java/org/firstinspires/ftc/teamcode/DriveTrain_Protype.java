@@ -78,6 +78,12 @@ public class DriveTrain_Protype extends OpMode
 
         leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
         leftDriveFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
+//        leftDriveFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightDriveFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -102,15 +108,24 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void loop() {
-    //making the doubles for all stick input for easy telemety usage and the directional math
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.5; // the times adjustment is to adjust to lower speeds do lose of power doing anything but foward backwards motions
-        double rx = -gamepad1.right_stick_x;
+        mecanumDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
-        double leftFP = 0;
-        double leftBP = 0;
-        double rightFP = 0;
-        double rightBP = 0;
+        if (gamepad1.dpad_left){
+            mecanumDrive(0,-1,0);
+        }else if (gamepad1.dpad_right){
+            mecanumDrive(0,1,0);
+        }
+
+    }
+
+    private void mecanumDrive(double y, double x, double rx) {
+
+
+
+        double leftFP;
+        double leftBP;
+        double rightFP;
+        double rightBP;
 
         leftFP = y + x + rx; // FP meaning Front Power and BP meaning Back Power
         leftBP = y - x + rx;
@@ -131,11 +146,12 @@ public class DriveTrain_Protype extends OpMode
             rightBP /= max;
         }
 
+
+
         leftDriveFront.setPower(leftFP);
         leftDriveBack.setPower(leftBP);
         rightDriveFront.setPower(rightFP);
         rightDriveBack.setPower(rightBP);
-
     }
 
     /*
