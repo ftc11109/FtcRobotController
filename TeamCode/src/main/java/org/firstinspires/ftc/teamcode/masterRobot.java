@@ -110,7 +110,6 @@ public class masterRobot extends OpMode {
         if (controls.spitOut()) {
             transtition.reverseIntakeTransitionMode();
         }
-        //TODO: need to work out manual intake with ring in elevator
         if (controls.polycordIntake()) {
             transtition.intakeTransitionMode();
         }

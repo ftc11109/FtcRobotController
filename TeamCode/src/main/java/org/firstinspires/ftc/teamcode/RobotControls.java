@@ -45,7 +45,6 @@ public class RobotControls {
     public boolean slowMode(){
         return gamepad1.left_trigger > 0.5;
     }
-    //TODO: discuss with team on whether shooterSpinUp should be a hold down or if we should have shooter stop
     public boolean shooterStop(){
         return gamepad1.b;
     }

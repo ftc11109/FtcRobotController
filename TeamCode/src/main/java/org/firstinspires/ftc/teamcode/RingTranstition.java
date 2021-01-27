@@ -103,7 +103,6 @@ public class RingTranstition {
     }
 
 
-    // TODO:  don't forget to define constants for these speeds
     public void intakeTransitionMode() {
         runLowerMotor(LOWER_BELT_INTAKE_SPEED);
     }
