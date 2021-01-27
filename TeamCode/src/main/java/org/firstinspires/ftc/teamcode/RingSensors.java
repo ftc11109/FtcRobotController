@@ -32,10 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -43,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
- * {@link twoMSensor} illustrates how to use the REV Robotics
+ * {@link RingSensors} illustrates how to use the REV Robotics
  * Time-of-Flight Range Sensor.
  * <p>
  * The op mode assumes that the range sensor is configured with a name of "sensor_range".
@@ -53,46 +49,55 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * @see <a href="http://revrobotics.com">REV Robotics Web Page</a>
  */
-public class twoMSensor {
+public class RingSensors {
 
-    public twoMSensor(Telemetry telemetry, HardwareMap hardwareMap) {
+    public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
     }
 
-    Telemetry telemetry;
-    HardwareMap hardwareMap;
-    private DistanceSensor sensorRange;
+    private Telemetry telemetry;
+    private HardwareMap hardwareMap;
+    private DistanceSensor intakeSensor;
+    private DistanceSensor elevatorSensor;
 
     public void init() {
         // you can use this as a regular DistanceSensor.
-        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
-
+        intakeSensor = hardwareMap.get(DistanceSensor.class, "intake sensor");
+        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
     }
 
-    public double getDistance(){
-        return sensorRange.getDistance(DistanceUnit.INCH);
+    public double getIntakeDistance(){
+        return intakeSensor.getDistance(DistanceUnit.MM);
+    }
+    public double getElevatorDistance(){
+        return elevatorSensor.getDistance(DistanceUnit.MM);
     }
 
-    public void loop() {
+    public boolean isRingInIntake(){
+        return getIntakeDistance() < 10*25.4;
+    }
+
+    public boolean isRingInElevator(){
+        return getElevatorDistance() < 3.75*25.4;
+    }
+
+    public void telemetry() {
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorRange;
+//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorRange;
 
         telemetry.addData(">>", "Press start to continue");
         telemetry.update();
 
         // generic DistanceSensor methods.
-        telemetry.addData("deviceName", sensorRange.getDeviceName());
-        telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-        telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-        telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-        telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
+        telemetry.addData("deviceName", intakeSensor.getDeviceName());
+        telemetry.addData("range", String.format("%.01f mm", intakeSensor.getDistance(DistanceUnit.MM)));
 
         // Rev2mDistanceSensor specific methods.
-        telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-        telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+//        telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+//        telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
         telemetry.update();
     }

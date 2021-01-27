@@ -29,10 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -47,29 +51,33 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-public class lowerPolyurathaneBelts
+public class RingIntake
 {
-    public lowerPolyurathaneBelts(Telemetry telemetry, HardwareMap hardwareMap) {
+    public RingIntake(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
     }
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
-
+    private DcMotor intakeMotor;
     /*
      * will run in master once init is hit
      */
     public void init() {
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake motor");
     }
 
 
 
-    /*
-    loop for all active motion
-     */
-    public void loop() {
-
+    public void intake() {
+        intakeMotor.setPower(0.75);
+    }
+    public void outtake(){
+        intakeMotor.setPower(-0.75);
+    }
+    public void doNothing(){
+        intakeMotor.setPower(0);
     }
 
 }
