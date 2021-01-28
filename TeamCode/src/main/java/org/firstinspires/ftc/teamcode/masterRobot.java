@@ -33,6 +33,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystem.Drive;
+import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
+import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
+import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
+import org.firstinspires.ftc.teamcode.subsystem.RobotControls;
+import org.firstinspires.ftc.teamcode.subsystem.Shooter;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -51,7 +58,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class masterRobot extends OpMode {
     // Declare OpMode members.
     RingIntake intake;
-    org.firstinspires.ftc.teamcode.Drive Drive;
+    org.firstinspires.ftc.teamcode.subsystem.Drive Drive;
     RingTranstition transtition;
     RingSensors disSensors;
     RobotControls controls;
