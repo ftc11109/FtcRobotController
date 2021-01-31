@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RobotControls {
     Gamepad gamepad1;
@@ -15,7 +12,7 @@ public class RobotControls {
     }
 
     public double forward(){
-        return gamepad1.left_stick_y;
+        return -gamepad1.left_stick_y;
     }
     public double strafe(){
         return gamepad1.left_stick_x;

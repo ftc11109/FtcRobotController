@@ -33,7 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
+import org.firstinspires.ftc.teamcode.subsystem.IMU;
 import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
 import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
@@ -54,15 +56,16 @@ import org.firstinspires.ftc.teamcode.subsystem.Shooter;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "master", group = "Iterative Opmode")
+@TeleOp(name = "master", group = "AA 11109")
 public class masterRobot extends OpMode {
     // Declare OpMode members.
     RingIntake intake;
-    org.firstinspires.ftc.teamcode.subsystem.Drive Drive;
+    Drive Drive;
     RingTranstition transtition;
     RingSensors disSensors;
     RobotControls controls;
     Shooter shooter;
+    IMU imu;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -79,6 +82,8 @@ public class masterRobot extends OpMode {
         controls = new RobotControls(gamepad1, gamepad2);
         shooter = new Shooter(telemetry, hardwareMap);
         shooter.init();
+        imu = new IMU(telemetry, hardwareMap);
+        imu.init();
     }
 
     /*
@@ -103,7 +108,10 @@ public class masterRobot extends OpMode {
     public void loop() {
         ////////////drive
 
-        Drive.drive(controls.forward(), controls.strafe(), controls.turn(), controls.slowMode());
+        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), -imu.getheading(AngleUnit.DEGREES) );
+
+// working robot centric mode
+//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), 0);
 
         /////////////transition
         transtition.doNothingMode();
@@ -136,20 +144,24 @@ public class masterRobot extends OpMode {
         }
 
 
-        /////////////shooter
+        ///////////shooter
         if (controls.shooterSpinUp()) {
             shooter.shooterSpinUp();
         } else {
             shooter.doNothing();
         }
 
-        /////////////telemetry
+//        /////////////telemetry
         disSensors.telemetry();
+
+        imu.telemetry();
+        telemetry.update();
     }
 
     /*
      * Code to run ONCE after the driver hits STOP
      */
+
     @Override
     public void stop() {
     }
