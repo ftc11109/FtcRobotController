@@ -30,4 +30,12 @@ public class Shooter {
     public void shooterSpinUp(){
         shooterMotor.setVelocity(SHOOTER_RPM);
     }
-}
+
+    public void setShootOn(boolean shooterOn){
+        if (shooterOn){
+            shooterSpinUp();
+        } else {
+            doNothing();
+        }
+    }
+    }

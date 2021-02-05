@@ -36,7 +36,7 @@ public class RobotControls {
     public boolean spitOut(){
         return gamepad1.dpad_down;
     }
-    public boolean shooterSpinUp(){
+    public boolean shooterToggle(){
         return gamepad1.left_trigger > 0.5;
     }
     public boolean slowMode(){

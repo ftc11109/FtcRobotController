@@ -67,6 +67,9 @@ public class masterRobot extends OpMode {
     Shooter shooter;
     IMU imu;
 
+    boolean isShooterOn = false;
+    boolean lastTriggerState = false;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -107,7 +110,6 @@ public class masterRobot extends OpMode {
     @Override
     public void loop() {
         ////////////drive
-
         Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), -imu.getheading(AngleUnit.DEGREES) );
 
 // working robot centric mode
@@ -145,16 +147,16 @@ public class masterRobot extends OpMode {
 
 
         ///////////shooter
-        if (controls.shooterSpinUp()) {
-            shooter.shooterSpinUp();
-        } else {
-            shooter.doNothing();
+        if (controls.shooterToggle() && !lastTriggerState){
+            isShooterOn = !isShooterOn;
         }
+        lastTriggerState = controls.shooterToggle();
+        shooter.setShootOn(isShooterOn);
 
-//        /////////////telemetry
+        /////////////telemetry
         disSensors.telemetry();
-
         imu.telemetry();
+
         telemetry.update();
     }
 
