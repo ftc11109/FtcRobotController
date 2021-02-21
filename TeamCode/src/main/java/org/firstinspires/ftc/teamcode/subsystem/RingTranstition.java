@@ -83,12 +83,11 @@ public class RingTranstition {
 
     private void runUpperMotor(double upperBeltsSpeed) {
         //RPM * pulley diameter * gear ratio
-        upperMotorSpeed = upperBeltsSpeed * Math.PI * 30 * (1 / 3);
-
+        upperMotorSpeed = -upperBeltsSpeed;  //upperBeltsSpeed * Math.PI * 30 * (1 / 3);
     }
 
     private void runLowerMotor(double lowerBeltsSpeed) {
-        lowerMotorSpeed = lowerBeltsSpeed * Math.PI * 30 * (1 / 3);
+        lowerMotorSpeed = lowerBeltsSpeed;  //lowerBeltsSpeed * Math.PI * 30 * (1 / 3);
     }
 
 
@@ -108,7 +107,6 @@ public class RingTranstition {
     }
 
     public void reverseIntakeTransitionMode() {
-
         runLowerMotor(LOWER_BELTS_SPIT_OUT_SPEED);
     }
 
