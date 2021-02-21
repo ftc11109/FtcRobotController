@@ -110,10 +110,10 @@ public class masterRobot extends OpMode {
     @Override
     public void loop() {
         ////////////drive
-        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), -imu.getheading(AngleUnit.DEGREES) );
+//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), -imu.getheading(AngleUnit.DEGREES) );
 
 // working robot centric mode
-//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), 0);
+        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), 0);
 
         /////////////transition
         transtition.doNothingMode();
