@@ -116,7 +116,7 @@ public class masterRobot extends OpMode {
 //        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), 0);
 
         /////////////transition
-//        transtition.doNothingMode();
+        transtition.doNothingMode();
 //        if (disSensors.isRingInIntake()) {
 //            transtition.intakeTransitionMode();
 //        }
