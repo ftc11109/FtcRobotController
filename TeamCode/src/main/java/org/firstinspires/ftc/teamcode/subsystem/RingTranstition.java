@@ -110,4 +110,9 @@ public class RingTranstition {
         runLowerMotor(LOWER_BELTS_SPIT_OUT_SPEED);
     }
 
+    public void telemetery(){
+        telemetry.addData("polyCord speed", eleBeltsRampBelts.getVelocity());
+        telemetry.addData("polyCord speed", eleWheelsLowerBelts.getVelocity());
+
+    }
 }

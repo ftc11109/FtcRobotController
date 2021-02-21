@@ -156,7 +156,7 @@ public class masterRobot extends OpMode {
         /////////////telemetry
 //        disSensors.telemetry();
         imu.telemetry();
-
+        transtition.telemetery();
         telemetry.update();
     }
 
