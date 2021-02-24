@@ -72,10 +72,10 @@ public class RingIntake
 
 
     public void intake() {
-        intakeMotor.setPower(0.75);
+        intakeMotor.setPower(0.25);
     }
     public void outtake(){
-        intakeMotor.setPower(-0.75);
+        intakeMotor.setPower(-0.25);
     }
     public void doNothing(){ intakeMotor.setPower(0); }
 
