@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -60,12 +61,12 @@ public class RingIntake
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
-    private DcMotor intakeMotor;
+    private DcMotorEx intakeMotor;
     /*
      * will run in master once init is hit
      */
     public void init() {
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake motor");
+        intakeMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "intake motor");
     }
 
 
@@ -76,8 +77,9 @@ public class RingIntake
     public void outtake(){
         intakeMotor.setPower(-0.75);
     }
-    public void doNothing(){
-        intakeMotor.setPower(0);
-    }
+    public void doNothing(){ intakeMotor.setPower(0); }
 
+    public void telemetry(){
+        telemetry.addData("intake speed",intakeMotor.getVelocity());
+    }
 }
