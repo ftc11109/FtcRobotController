@@ -45,6 +45,8 @@ public class RobotControls {
     public boolean shooterStop(){
         return gamepad1.b;
     }
+    public boolean upperTransitionIntake(){ return gamepad1.dpad_left;}
+    public boolean upperTransitionOuttake(){ return gamepad1.dpad_right;}
 
 
 

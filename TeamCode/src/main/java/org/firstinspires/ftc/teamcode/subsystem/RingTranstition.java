@@ -51,6 +51,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RingTranstition {
 
+    private static final double REVERSE_UPPER_BELTS_SPEED = -2000.0;
     private static final double SHOOTING_UPPER_BELTS_SPEED = 2000.0;
     private static final double SHOOTING_LOWER_BELTS_SPEED = 3000.0;
     private static final double LOWER_BELT_INTAKE_SPEED = 3000.0;
@@ -99,6 +100,14 @@ public class RingTranstition {
     public void doNothingMode() {
         runLowerMotor(0);
         runUpperMotor(0);
+    }
+
+    public void upperTransitionIntake(){
+        runUpperMotor(SHOOTING_UPPER_BELTS_SPEED);
+    }
+
+    public void upperTransitionOuttake(){
+        runUpperMotor(REVERSE_UPPER_BELTS_SPEED);
     }
 
 
