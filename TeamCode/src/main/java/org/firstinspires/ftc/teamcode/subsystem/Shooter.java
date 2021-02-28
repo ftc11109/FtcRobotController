@@ -38,4 +38,8 @@ public class Shooter {
             doNothing();
         }
     }
+
+    public void telemetry(){
+        telemetry.addData("shooter speed", shooterMotor.getVelocity());
+    }
     }

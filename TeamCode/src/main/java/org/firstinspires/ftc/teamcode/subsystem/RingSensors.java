@@ -59,28 +59,30 @@ public class RingSensors {
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
     private DistanceSensor intakeSensor;
-    private DistanceSensor elevatorSensor;
+//    private DistanceSensor elevatorSensor;
 
     public void init() {
         // you can use this as a regular DistanceSensor.
         intakeSensor = hardwareMap.get(DistanceSensor.class, "intake sensor");
-        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
+//        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
     }
 
     public double getIntakeDistance(){
-        return intakeSensor.getDistance(DistanceUnit.MM);
+        return intakeSensor.getDistance(DistanceUnit.INCH);
     }
-    public double getElevatorDistance(){
-        return elevatorSensor.getDistance(DistanceUnit.MM);
-    }
+//    public double getElevatorDistance(){
+//        return elevatorSensor.getDistance(DistanceUnit.MM);
+//    }
+
+
 
     public boolean isRingInIntake(){
-        return getIntakeDistance() < 10*25.4;
+        return getIntakeDistance() < 1.75;
     }
 
-    public boolean isRingInElevator(){
-        return getElevatorDistance() < 3.75*25.4;
-    }
+//    public boolean isRingInElevator(){
+//        return getElevatorDistance() < 3.75*25.4;
+//    }
 
     public void telemetry() {
 
@@ -94,6 +96,7 @@ public class RingSensors {
         // generic DistanceSensor methods.
         telemetry.addData("deviceName", intakeSensor.getDeviceName());
         telemetry.addData("range", String.format("%.01f mm", intakeSensor.getDistance(DistanceUnit.MM)));
+        telemetry.addData("isRing?", isRingInIntake());
 
         // Rev2mDistanceSensor specific methods.
 //        telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));

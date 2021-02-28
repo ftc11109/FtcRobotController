@@ -54,6 +54,9 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 public class RingIntake
 {
+    //this should always be half of the polycord speed
+    private static final double INTAKE_SPEED = 3000/2;
+    private static final double OUTTAKE_SPEED = -3000/2;
     public RingIntake(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -71,13 +74,9 @@ public class RingIntake
 
 
 
-    public void intake() {
-        intakeMotor.setPower(0.50);
-    }
-    public void outtake(){
-        intakeMotor.setPower(-0.50);
-    }
-    public void doNothing(){ intakeMotor.setPower(0); }
+    public void intake() { intakeMotor.setVelocity(INTAKE_SPEED); }
+    public void outtake(){ intakeMotor.setVelocity(OUTTAKE_SPEED); }
+    public void doNothing(){ intakeMotor.setVelocity(0); }
 
     public void telemetry(){
         telemetry.addData("intake speed",intakeMotor.getVelocity());
