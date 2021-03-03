@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter {
-    private static final double SHOOTER_RPM = 3000.0;
+    double targetShootSpeed = 1200.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
@@ -19,6 +19,7 @@ public class Shooter {
     private DcMotorEx shooterMotor;
 
 
+
     public void init(){
         shooterMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "shooter");
     }
@@ -28,7 +29,7 @@ public class Shooter {
     }
 
     public void shooterSpinUp(){
-        shooterMotor.setVelocity(SHOOTER_RPM);
+        shooterMotor.setVelocity(targetShootSpeed);
     }
 
     public void setShootOn(boolean shooterOn){
@@ -39,7 +40,16 @@ public class Shooter {
         }
     }
 
+    public void increaseSpeed(){
+        targetShootSpeed =+ 100;
+    }
+
+    public void decreaseSpeed(){
+        targetShootSpeed =- 100;
+    }
+
     public void telemetry(){
         telemetry.addData("shooter speed", shooterMotor.getVelocity());
+        telemetry.addData("target shooter speed", targetShootSpeed);
     }
     }

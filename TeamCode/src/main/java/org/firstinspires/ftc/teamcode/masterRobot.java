@@ -153,6 +153,9 @@ public class masterRobot extends OpMode {
         lastTriggerState = controls.shooterToggle();
         shooter.setShootOn(isShooterOn);
 
+//        if (controls.increaseShooterSpeed()){
+//            shooter.increaseSpeed();
+//        }
         /////////////telemetry
 //        disSensors.telemetry();
         imu.telemetry();
