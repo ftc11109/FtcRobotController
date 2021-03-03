@@ -71,6 +71,7 @@ public class masterRobot extends OpMode {
     boolean lastTriggerState = false;
 
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime controlTime = new ElapsedTime();
 
     @Override
     public void init() {
@@ -153,9 +154,15 @@ public class masterRobot extends OpMode {
         lastTriggerState = controls.shooterToggle();
         shooter.setShootOn(isShooterOn);
 
-//        if (controls.increaseShooterSpeed()){
-//            shooter.increaseSpeed();
-//        }
+        if (controls.increaseShooterSpeed() && controlTime.milliseconds() > 500){
+            shooter.increaseSpeed();
+            controlTime.reset();
+        }
+
+        if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500){
+            shooter.decreaseSpeed();
+            controlTime.reset();
+        }
         /////////////telemetry
 //        disSensors.telemetry();
         imu.telemetry();

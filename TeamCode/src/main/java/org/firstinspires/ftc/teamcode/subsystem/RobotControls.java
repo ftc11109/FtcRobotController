@@ -48,7 +48,7 @@ public class RobotControls {
     public boolean upperTransitionIntake(){ return gamepad1.dpad_left;}
     public boolean upperTransitionOuttake(){ return gamepad1.dpad_right;}
     public boolean increaseShooterSpeed(){ return gamepad1.start;}
-
+    public boolean decreaseShooterSpeed(){ return gamepad1.back;}
 
 
 }
