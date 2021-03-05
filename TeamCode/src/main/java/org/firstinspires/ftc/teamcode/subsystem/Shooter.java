@@ -42,11 +42,11 @@ public class Shooter {
     }
     //wont go past base shooter speed
     public void increaseSpeed(){
-        targetShootSpeed =+ 100;
+        targetShootSpeed = targetShootSpeed + 100;
     }
 
     public void decreaseSpeed(){
-        targetShootSpeed =- 100;
+        targetShootSpeed = targetShootSpeed - 100;
     }
 
     public void telemetry(){
