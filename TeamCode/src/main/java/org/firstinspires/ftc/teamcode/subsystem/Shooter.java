@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter {
-    final static double BASE_SHOOT_SPEED = 1200.0;
-    double targetShootSpeed = BASE_SHOOT_SPEED;
+    double targetShootSpeed = 1200.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
@@ -43,11 +42,11 @@ public class Shooter {
     }
     //wont go past base shooter speed
     public void increaseSpeed(){
-        targetShootSpeed = targetShootSpeed + 100;
+        targetShootSpeed =+ 100;
     }
 
     public void decreaseSpeed(){
-        targetShootSpeed = targetShootSpeed - 100;
+        targetShootSpeed =- 100;
     }
 
     public void telemetry(){
