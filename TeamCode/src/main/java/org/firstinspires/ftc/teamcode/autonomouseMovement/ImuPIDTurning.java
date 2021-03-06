@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomouseMovement;
 
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -14,16 +15,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
 
+
 public class ImuPIDTurning {
 
-    private static final double P_RATE = 0.06;
+    private static final double P_RATE = 0.07;
     private static final double RAMP_RATE = P_RATE * 7;
     private ElapsedTime runtime = new ElapsedTime();
 
     Drive drive;
     HardwareMap hardwareMap;
     Telemetry telemetry;
-    VoltageSensor v;
 
     DcMotor leftmotorB;
     DcMotor rightmotorB;
@@ -37,7 +38,7 @@ public class ImuPIDTurning {
     public ImuPIDTurning(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
-        this.v = hardwareMap.voltageSensor.get("Expansion Hub 2");
+
     }
 
     public void init() {
@@ -47,23 +48,25 @@ public class ImuPIDTurning {
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-        parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
+        leftmotorB = hardwareMap.get(DcMotor.class, "left_driveB");
+        leftmotorF = hardwareMap.get(DcMotor.class, "left_driveF");
+        rightmotorB = hardwareMap.get(DcMotor.class, "right_driveB");
+        rightmotorF = hardwareMap.get(DcMotor.class, "right_driveF");
+
+
         imu.initialize(parameters);
 
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
 
-        while (!imu.isGyroCalibrated()) {
-//        drive.drive();
-        }
 
-        telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
+
         resetAngle();
 
     }
@@ -133,7 +136,7 @@ public class ImuPIDTurning {
     }
 
     private double speedByBusVoltage(double speed) {
-        return (12.5 / v.getVoltage()) * speed;
+        return speed;
     }
 
     public void sleepAndLog(double ms) {
@@ -192,6 +195,8 @@ public class ImuPIDTurning {
 
             leftmotorB.setPower(speedByBusVoltage(leftPower));
             rightmotorB.setPower(speedByBusVoltage(rightPower));
+            leftmotorF.setPower(speedByBusVoltage(leftPower));
+            rightmotorF.setPower(speedByBusVoltage(rightPower));
 
             telemetry.addData("left pow", leftPower);
             telemetry.addData("right pow", rightPower);
