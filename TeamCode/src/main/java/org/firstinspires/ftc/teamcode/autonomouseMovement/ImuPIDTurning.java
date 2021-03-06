@@ -43,7 +43,7 @@ public class ImuPIDTurning {
 
     public void init() {
 
-        drive = new Drive(telemetry,hardwareMap);
+        drive = new Drive(telemetry, hardwareMap);
         drive.init();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -64,7 +64,6 @@ public class ImuPIDTurning {
 
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
-
 
 
         resetAngle();
@@ -200,7 +199,7 @@ public class ImuPIDTurning {
 
             telemetry.addData("left pow", leftPower);
             telemetry.addData("right pow", rightPower);
-            if (inRange(1,-1,getAngle(),degrees)) {
+            if (inRange(1, -1, getAngle(), degrees)) {
                 rightmotorB.setPower(0);
                 leftmotorB.setPower(0);
                 break;

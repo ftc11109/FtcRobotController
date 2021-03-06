@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Shooter {
     double targetShootSpeed = 1200.0;
@@ -52,5 +53,6 @@ public class Shooter {
     public void telemetry(){
         telemetry.addData("shooter speed", shooterMotor.getVelocity());
         telemetry.addData("target shooter speed", targetShootSpeed);
+        telemetry.addData("shooter current", shooterMotor.getCurrent(CurrentUnit.AMPS));
     }
     }
