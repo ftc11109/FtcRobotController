@@ -159,10 +159,16 @@ public class masterRobot extends OpMode {
             controlTime.reset();
         }
 
+        if (controls.resetMinAndMax()){
+            shooter.ResetMinMax();
+        }
+
         if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500){
             shooter.decreaseSpeed();
             controlTime.reset();
         }
+
+        shooter.loop();
         /////////////telemetry
 //        disSensors.telemetry();
         imu.telemetry();

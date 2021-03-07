@@ -18,6 +18,9 @@ public class Shooter {
     }
 
     private DcMotorEx shooterMotor;
+    private double minSpeed;
+    private double minAmps;
+    private double maxAmps;
 
 
 
@@ -41,18 +44,33 @@ public class Shooter {
             doNothing();
         }
     }
-    //wont go past base shooter speed
+
     public void increaseSpeed(){
-        targetShootSpeed = targetShootSpeed + 100;
+        targetShootSpeed += targetShootSpeed + 100;
     }
 
     public void decreaseSpeed(){
         targetShootSpeed = targetShootSpeed - 100;
     }
 
+    public void ResetMinMax(){
+        minAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
+        minSpeed = shooterMotor.getVelocity();
+        maxAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
+    }
+
+    public void loop (){
+        minAmps = Math.min(minAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
+        minSpeed = Math.min(minSpeed, shooterMotor.getVelocity());
+        maxAmps = Math.max(maxAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
+    }
+
     public void telemetry(){
         telemetry.addData("shooter speed", shooterMotor.getVelocity());
         telemetry.addData("target shooter speed", targetShootSpeed);
         telemetry.addData("shooter current", shooterMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("min shooter amps", minAmps);
+        telemetry.addData("min shooter speed", minSpeed);
+        telemetry.addData("max shooter amps", maxAmps);
     }
     }

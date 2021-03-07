@@ -49,6 +49,7 @@ public class RobotControls {
     public boolean upperTransitionOuttake(){ return gamepad1.dpad_right;}
     public boolean increaseShooterSpeed(){ return gamepad1.start;}
     public boolean decreaseShooterSpeed(){ return gamepad1.back;}
+    public boolean resetMinAndMax(){ return gamepad1.a;}
 
 
 }
