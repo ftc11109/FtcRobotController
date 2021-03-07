@@ -46,7 +46,7 @@ public class Shooter {
     }
 
     public void increaseSpeed(){
-        targetShootSpeed += targetShootSpeed + 100;
+        targetShootSpeed = targetShootSpeed + 100;
     }
 
     public void decreaseSpeed(){
