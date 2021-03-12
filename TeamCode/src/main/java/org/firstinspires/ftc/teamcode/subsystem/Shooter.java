@@ -12,7 +12,7 @@ public class Shooter {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    public Shooter(Telemetry telemetry, HardwareMap hardwareMap){
+    public Shooter(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
     }
@@ -23,49 +23,48 @@ public class Shooter {
     private double maxAmps;
 
 
-
-    public void init(){
+    public void init() {
 
         shooterMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "shooter");
     }
 
-    public void doNothing(){
+    public void doNothing() {
         shooterMotor.setVelocity(0);
     }
 
-    public void shooterSpinUp(){
+    public void shooterSpinUp() {
         shooterMotor.setVelocity(targetShootSpeed);
     }
 
-    public void setShootOn(boolean shooterOn){
-        if (shooterOn){
+    public void setShootOn(boolean shooterOn) {
+        if (shooterOn) {
             shooterSpinUp();
         } else {
             doNothing();
         }
     }
 
-    public void increaseSpeed(){
+    public void increaseSpeed() {
         targetShootSpeed = targetShootSpeed + 100;
     }
 
-    public void decreaseSpeed(){
+    public void decreaseSpeed() {
         targetShootSpeed = targetShootSpeed - 100;
     }
 
-    public void ResetMinMax(){
+    public void ResetMinMax() {
         minAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
         minSpeed = shooterMotor.getVelocity();
         maxAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
     }
 
-    public void loop (){
+    public void loop() {
         minAmps = Math.min(minAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
         minSpeed = Math.min(minSpeed, shooterMotor.getVelocity());
         maxAmps = Math.max(maxAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
     }
 
-    public void telemetry(){
+    public void telemetry() {
         telemetry.addData("shooter speed", shooterMotor.getVelocity());
         telemetry.addData("target shooter speed", targetShootSpeed);
         telemetry.addData("shooter current", shooterMotor.getCurrent(CurrentUnit.AMPS));
@@ -73,4 +72,4 @@ public class Shooter {
         telemetry.addData("min shooter speed", minSpeed);
         telemetry.addData("max shooter amps", maxAmps);
     }
-    }
+}

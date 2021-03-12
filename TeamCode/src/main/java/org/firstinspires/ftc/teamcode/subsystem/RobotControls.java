@@ -12,13 +12,13 @@ public class RobotControls {
     }
 
     public double forward(){
-        return -gamepad1.left_stick_y;
+        return gamepad1.left_stick_y;
     }
     public double strafe(){
-        return gamepad1.left_stick_x;
+        return -gamepad1.left_stick_x;
     }
     public double turn(){
-        return gamepad1.right_stick_x;
+        return -gamepad1.right_stick_x;
     }
 
     public boolean intake(){
