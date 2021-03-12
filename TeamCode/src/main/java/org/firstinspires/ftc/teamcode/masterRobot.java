@@ -88,6 +88,8 @@ public class masterRobot extends OpMode {
         shooter.init();
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
+
+        telemetry.addData("ver","1.1");
     }
 
     /*
