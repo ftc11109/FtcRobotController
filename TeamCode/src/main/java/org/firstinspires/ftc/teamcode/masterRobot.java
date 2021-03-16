@@ -62,7 +62,7 @@ public class masterRobot extends OpMode {
     RingIntake intake;
     Drive Drive;
     RingTranstition transtition;
-//    RingSensors disSensors;
+    RingSensors disSensors;
     RobotControls controls;
     Shooter shooter;
     IMU imu;
@@ -79,8 +79,8 @@ public class masterRobot extends OpMode {
         intake.init();
         Drive = new Drive(telemetry, hardwareMap);
         Drive.init();
-//        disSensors = new RingSensors(telemetry, hardwareMap);
-//        disSensors.init();
+        disSensors = new RingSensors(telemetry, hardwareMap);
+        disSensors.init();
         transtition = new RingTranstition(telemetry, hardwareMap);
         transtition.init();
         controls = new RobotControls(gamepad1, gamepad2);
@@ -172,7 +172,7 @@ public class masterRobot extends OpMode {
 
         shooter.loop();
         /////////////telemetry
-//        disSensors.telemetry();
+        disSensors.telemetry();
         imu.telemetry();
         transtition.telemetery();
         intake.telemetry();
