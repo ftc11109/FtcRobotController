@@ -71,17 +71,28 @@ public class RingSensors {
 //        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
     }
 
-    public double getIntakeDistance(){
-        return intakeSensor0.getDistance(DistanceUnit.INCH);
+    public double getIntake0Distance() {
+        return intakeSensor0.getDistance(DistanceUnit.MM);
+    }
+
+    public double getIntake1Distance() {
+        return intakeSensor1.getDistance(DistanceUnit.MM);
+    }
+
+    public double getIntake2Distance() {
+        return intakeSensor2.getDistance(DistanceUnit.MM);
     }
 //    public double getElevatorDistance(){
 //        return elevatorSensor.getDistance(DistanceUnit.MM);
 //    }
 
 
-
-    public boolean isRingInIntake(){
-        return getIntakeDistance() < 1.75;
+    public boolean isRingInIntake() {
+        if (getIntake0Distance() > 65 || getIntake1Distance() > 65 || getIntake2Distance() > 65) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 //    public boolean isRingInElevator(){

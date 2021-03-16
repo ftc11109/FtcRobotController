@@ -120,9 +120,9 @@ public class masterRobot extends OpMode {
 
         /////////////transition
         transtition.doNothingMode();
-//        if (disSensors.isRingInIntake()) {
-//            transtition.intakeTransitionMode();
-//        }
+        if (disSensors.isRingInIntake()) {
+            transtition.intakeTransitionMode();
+        }
 //        if (disSensors.isRingInElevator()) {
 //            transtition.doNothingMode();
 //        }
