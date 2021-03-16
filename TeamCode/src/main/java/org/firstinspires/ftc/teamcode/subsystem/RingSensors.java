@@ -88,11 +88,7 @@ public class RingSensors {
 
 
     public boolean isRingInIntake() {
-        if (getIntake0Distance() < 65 || getIntake1Distance() < 65 || getIntake2Distance() < 65) {
-            return true;
-        } else {
-            return false;
-        }
+        return getIntake0Distance() < 65;
     }
 
 //    public boolean isRingInElevator(){
