@@ -109,6 +109,5 @@ public class RingSensors {
 //        telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
 //        telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
-        telemetry.update();
     }
 }
