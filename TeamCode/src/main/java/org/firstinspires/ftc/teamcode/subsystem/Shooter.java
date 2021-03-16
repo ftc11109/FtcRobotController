@@ -8,7 +8,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Shooter {
-    double targetShootSpeed = 1200.0;
+    //power shot speed 1000
+    double targetShootSpeed = 1400.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
