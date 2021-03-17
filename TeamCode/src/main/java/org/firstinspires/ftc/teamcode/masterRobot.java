@@ -89,7 +89,7 @@ public class masterRobot extends OpMode {
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
 
-        telemetry.addData("ver","1.3");
+        telemetry.addData("ver","1.31");
     }
 
     /*
@@ -122,6 +122,7 @@ public class masterRobot extends OpMode {
         transtition.doNothingMode();
         if (disSensors.isRingInIntake()) {
             transtition.intakeTransitionMode();
+
         }
 //        if (disSensors.isRingInElevator()) {
 //            transtition.doNothingMode();
