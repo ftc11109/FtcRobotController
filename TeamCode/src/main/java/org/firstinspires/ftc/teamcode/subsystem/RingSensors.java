@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -51,6 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RingSensors {
 
+    private static final double RING_WAIT = 100;
     public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -61,7 +63,10 @@ public class RingSensors {
     private DistanceSensor intakeSensor0;
     private DistanceSensor intakeSensor1;
     private DistanceSensor intakeSensor2;
+
 //    private DistanceSensor elevatorSensor;
+
+    private ElapsedTime ringTimer = new ElapsedTime();
 
     public void init() {
         // you can use this as a regular DistanceSensor.
@@ -88,7 +93,14 @@ public class RingSensors {
 
 
     public boolean isRingInIntake() {
-        return (intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60);
+        if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)){
+            ringTimer.reset();
+            return true;
+        } else if (ringTimer.milliseconds() > RING_WAIT){
+            return false;
+        } else {
+            return true;
+        }
     }
 
 //    public boolean isRingInElevator(){

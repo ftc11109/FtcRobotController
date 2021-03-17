@@ -89,7 +89,7 @@ public class masterRobot extends OpMode {
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
 
-        telemetry.addData("ver","1.32");
+        telemetry.addData("ver","1.33");
     }
 
     /*
