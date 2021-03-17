@@ -88,7 +88,7 @@ public class RingSensors {
 
 
     public boolean isRingInIntake() {
-        return (intakeSensor0.getDistance(DistanceUnit.MM) < 65 || intakeSensor1.getDistance(DistanceUnit.MM) < 65 || intakeSensor2.getDistance(DistanceUnit.MM) < 65);
+        return (intakeSensor0.getDistance(DistanceUnit.MM) < 55 || intakeSensor1.getDistance(DistanceUnit.MM) < 55 || intakeSensor2.getDistance(DistanceUnit.MM) < 55);
     }
 
 //    public boolean isRingInElevator(){

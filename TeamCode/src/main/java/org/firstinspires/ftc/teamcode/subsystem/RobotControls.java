@@ -40,7 +40,7 @@ public class RobotControls {
         return gamepad1.left_trigger > 0.5;
     }
     public boolean slowMode(){
-        return gamepad1.left_trigger > 0.5;
+        return gamepad1.y;
     }
     public boolean shooterStop(){
         return gamepad1.b;
