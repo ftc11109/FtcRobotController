@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Drive {
 
-    public static final double SLOW_MULTIPLiER = 0.4;
+    public static final double SLOW_MULTIPLiER = 0.35;
 
     public Drive(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -100,7 +100,7 @@ public class Drive {
     }
 
     public void drive(double x, double y, double rx, boolean slowMode, double gyroAngle) {
-        if (slowMode) {
+        if (!slowMode) {
             drive(x * SLOW_MULTIPLiER, y * SLOW_MULTIPLiER, rx * SLOW_MULTIPLiER, gyroAngle);
         } else {
             drive(x, y, rx, gyroAngle);
