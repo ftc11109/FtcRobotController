@@ -52,7 +52,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RingSensors {
 
-    private static final double RING_WAIT = 500;
+    private static final double RING_WAIT = 350;
+
     public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -93,10 +94,10 @@ public class RingSensors {
 
 
     public boolean isRingInIntake() {
-        if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)){
+        if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)) {
             ringTimer.reset();
             return true;
-        } else if (ringTimer.milliseconds() > RING_WAIT){
+        } else if (ringTimer.milliseconds() > RING_WAIT) {
             return false;
         } else {
             return true;
