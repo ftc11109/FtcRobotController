@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -53,6 +54,9 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 public class RingIntake
 {
+    //this should always be half of the polycord speed
+    private static final double INTAKE_SPEED = 3000/2;
+    private static final double OUTTAKE_SPEED = -3000/2;
     public RingIntake(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -60,24 +64,21 @@ public class RingIntake
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
-    private DcMotor intakeMotor;
+    private DcMotorEx intakeMotor;
     /*
      * will run in master once init is hit
      */
     public void init() {
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake motor");
+        intakeMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "intake motor");
     }
 
 
 
-    public void intake() {
-        intakeMotor.setPower(0.75);
-    }
-    public void outtake(){
-        intakeMotor.setPower(-0.75);
-    }
-    public void doNothing(){
-        intakeMotor.setPower(0);
-    }
+    public void intake() { intakeMotor.setVelocity(INTAKE_SPEED); }
+    public void outtake(){ intakeMotor.setVelocity(OUTTAKE_SPEED); }
+    public void doNothing(){ intakeMotor.setVelocity(0); }
 
+    public void telemetry(){
+        telemetry.addData("intake speed",intakeMotor.getVelocity());
+    }
 }

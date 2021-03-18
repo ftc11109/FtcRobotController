@@ -8,9 +8,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Drive {
 
-    public static final double SLOW_MULTIPLiER = 0.4;
+    public static final double SLOW_MULTIPLiER = 0.35;
 
-    public Drive(Telemetry telemetry, HardwareMap hardwareMap){
+    public Drive(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
     }
@@ -21,12 +21,13 @@ public class Drive {
     private DcMotor rightDriveBack = null;
     private DcMotor leftDriveFront = null;
     private DcMotor rightDriveFront = null;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
     public void init() {
 
-        leftDriveBack  = hardwareMap.get(DcMotor.class, "left_driveB");
+        leftDriveBack = hardwareMap.get(DcMotor.class, "left_driveB");
         rightDriveBack = hardwareMap.get(DcMotor.class, "right_driveB");
         rightDriveFront = hardwareMap.get(DcMotor.class, "right_driveF");
         leftDriveFront = hardwareMap.get(DcMotor.class, "left_driveF");
@@ -41,11 +42,19 @@ public class Drive {
 
     }
 
+    public static double[] rotateVector(double x, double y, double angle) {
+        double cosA = Math.cos(angle * (Math.PI / 180.0));
+        double sinA = Math.sin(angle * (Math.PI / 180.0));
+        double out[] = new double[2];
+        out[0] = x * cosA - y * sinA;
+        out[1] = x * sinA + y * cosA;
+        return out;
+    }
+
     //y is the y value of the left joy stick.
     //x is the x value of the left joy stick.
     //rx is the x value of the right joy stick.
-    public void drive(double y, double x, double rx) {
-
+    public void drive(double x, double y, double rx, double gyroAngle) {
 
 
         double leftFP;
@@ -53,14 +62,25 @@ public class Drive {
         double rightFP;
         double rightBP;
 
-        leftFP = y + x + rx; // FP meaning Front Power and BP meaning Back Power
-        leftBP = y - x + rx;
-        rightFP = y - x - rx;
-        rightBP = y + x - rx;
+        double xIn = x;
+        double yIn = y;
+
+        // Compensate for gyro angle.
+        double rotated[] = rotateVector(xIn, yIn, gyroAngle);
+        xIn = rotated[0];
+
+        //throttle is used to make up for the faster speeds when the robot moves laterally
+        yIn = rotated[1];
+
+
+        leftFP = yIn + xIn + rx; // FP meaning Front Power and BP meaning Back Power
+        leftBP = yIn - xIn + rx;
+        rightFP = yIn - xIn - rx;
+        rightBP = yIn + xIn - rx;
 
 
         if (Math.abs(leftFP) > 1 || Math.abs(leftBP) > 1 ||
-                Math.abs(rightFP) > 1 || Math.abs(rightBP) > 1){
+                Math.abs(rightFP) > 1 || Math.abs(rightBP) > 1) {
             double max = 0;
             max = Math.max(Math.abs(leftFP), Math.abs(leftBP));
             max = Math.max(Math.abs(rightFP), max);
@@ -73,18 +93,17 @@ public class Drive {
         }
 
 
-
         leftDriveFront.setPower(leftFP);
         leftDriveBack.setPower(leftBP);
         rightDriveFront.setPower(rightFP);
         rightDriveBack.setPower(rightBP);
     }
 
-    public void drive(double y, double x, double rx, boolean slowMode){
-        if (slowMode){
-          drive(y * SLOW_MULTIPLiER, x * SLOW_MULTIPLiER, rx * SLOW_MULTIPLiER);
+    public void drive(double x, double y, double rx, boolean slowMode, double gyroAngle) {
+        if (!slowMode) {
+            drive(x * SLOW_MULTIPLiER, y * SLOW_MULTIPLiER, rx * SLOW_MULTIPLiER, gyroAngle);
         } else {
-            drive(y, x, rx);
+            drive(x, y, rx, gyroAngle);
         }
     }
 

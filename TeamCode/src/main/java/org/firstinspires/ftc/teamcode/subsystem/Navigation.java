@@ -29,7 +29,7 @@ public class Navigation {
         imu = hwMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
         imu.initialize(params);
-        mecanumDrive.init(hwMap);
+       mecanumDrive.init(hwMap);
         setPosition(0, 0, DistanceUnit.CM);
     }
 

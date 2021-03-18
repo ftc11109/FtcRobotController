@@ -51,9 +51,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RingTranstition {
 
-    private static final double SHOOTING_UPPER_BELTS_SPEED = 2000.0;
+    private static final double REVERSE_UPPER_BELTS_SPEED = -2000.0;
+    private static final double SHOOTING_UPPER_BELTS_SPEED = 750.0;
     private static final double SHOOTING_LOWER_BELTS_SPEED = 1500.0;
-    private static final double LOWER_BELT_INTAKE_SPEED = 2000.0;
+    private static final double LOWER_BELT_INTAKE_SPEED = 1500.0;
     public static final double LOWER_BELTS_SPIT_OUT_SPEED = -1000.0;
     private double lowerMotorSpeed;
     private double upperMotorSpeed;
@@ -83,12 +84,11 @@ public class RingTranstition {
 
     private void runUpperMotor(double upperBeltsSpeed) {
         //RPM * pulley diameter * gear ratio
-        upperMotorSpeed = upperBeltsSpeed * Math.PI * 30 * (1 / 3);
-
+        upperMotorSpeed = -upperBeltsSpeed;  //upperBeltsSpeed * Math.PI * 30 * (1 / 3);
     }
 
     private void runLowerMotor(double lowerBeltsSpeed) {
-        lowerMotorSpeed = lowerBeltsSpeed * Math.PI * 30 * (1 / 3);
+        lowerMotorSpeed = lowerBeltsSpeed;  //lowerBeltsSpeed * Math.PI * 30 * (1 / 3);
     }
 
 
@@ -102,14 +102,27 @@ public class RingTranstition {
         runUpperMotor(0);
     }
 
+    public void upperTransitionIntake(){
+        runUpperMotor(SHOOTING_UPPER_BELTS_SPEED);
+    }
+
+    public void upperTransitionOuttake(){
+        runUpperMotor(REVERSE_UPPER_BELTS_SPEED);
+    }
+
 
     public void intakeTransitionMode() {
+        runUpperMotor(SHOOTING_UPPER_BELTS_SPEED);
         runLowerMotor(LOWER_BELT_INTAKE_SPEED);
     }
 
     public void reverseIntakeTransitionMode() {
-
         runLowerMotor(LOWER_BELTS_SPIT_OUT_SPEED);
     }
 
+    public void telemetery(){
+        telemetry.addData("polyCord speed", eleBeltsRampBelts.getVelocity());
+        telemetry.addData("polyCord speed", eleWheelsLowerBelts.getVelocity());
+
+    }
 }

@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -51,6 +52,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RingSensors {
 
+    private static final double RING_WAIT = 350;
+
     public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -58,47 +61,63 @@ public class RingSensors {
 
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
-    private DistanceSensor intakeSensor;
-    private DistanceSensor elevatorSensor;
+    private DistanceSensor intakeSensor0;
+    private DistanceSensor intakeSensor1;
+    private DistanceSensor intakeSensor2;
+
+//    private DistanceSensor elevatorSensor;
+
+    private ElapsedTime ringTimer = new ElapsedTime();
 
     public void init() {
         // you can use this as a regular DistanceSensor.
-        intakeSensor = hardwareMap.get(DistanceSensor.class, "intake sensor");
-        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
+        intakeSensor0 = hardwareMap.get(DistanceSensor.class, "int1");
+        intakeSensor1 = hardwareMap.get(DistanceSensor.class, "int2");
+        intakeSensor2 = hardwareMap.get(DistanceSensor.class, "int3");
+//        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
     }
 
-    public double getIntakeDistance(){
-        return intakeSensor.getDistance(DistanceUnit.MM);
-    }
-    public double getElevatorDistance(){
-        return elevatorSensor.getDistance(DistanceUnit.MM);
+    public double getIntake0Distance() {
+        return intakeSensor0.getDistance(DistanceUnit.MM);
     }
 
-    public boolean isRingInIntake(){
-        return getIntakeDistance() < 10*25.4;
+    public double getIntake1Distance() {
+        return intakeSensor1.getDistance(DistanceUnit.MM);
     }
 
-    public boolean isRingInElevator(){
-        return getElevatorDistance() < 3.75*25.4;
+    public double getIntake2Distance() {
+        return intakeSensor2.getDistance(DistanceUnit.MM);
     }
+//    public double getElevatorDistance(){
+//        return elevatorSensor.getDistance(DistanceUnit.MM);
+//    }
+
+
+    public boolean isRingInIntake() {
+        if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)) {
+            ringTimer.reset();
+            return true;
+        } else if (ringTimer.milliseconds() > RING_WAIT) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+//    public boolean isRingInElevator(){
+//        return getElevatorDistance() < 3.75*25.4;
+//    }
 
     public void telemetry() {
 
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
-//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorRange;
-
-        telemetry.addData(">>", "Press start to continue");
-        telemetry.update();
 
         // generic DistanceSensor methods.
-        telemetry.addData("deviceName", intakeSensor.getDeviceName());
-        telemetry.addData("range", String.format("%.01f mm", intakeSensor.getDistance(DistanceUnit.MM)));
+        telemetry.addData("deviceName", intakeSensor0.getDeviceName());
+        telemetry.addData("range0", String.format("%.01f mm", intakeSensor0.getDistance(DistanceUnit.MM)));
+        telemetry.addData("range1", intakeSensor1.getDistance(DistanceUnit.MM));
+        telemetry.addData("range2", intakeSensor2.getDistance(DistanceUnit.MM));
 
-        // Rev2mDistanceSensor specific methods.
-//        telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-//        telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+        telemetry.addData("isRing?", isRingInIntake());
 
-        telemetry.update();
     }
 }

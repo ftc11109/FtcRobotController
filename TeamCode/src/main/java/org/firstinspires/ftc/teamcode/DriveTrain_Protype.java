@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -56,6 +58,7 @@ import com.qualcomm.robotcore.util.Range;
 public class DriveTrain_Protype extends TeleDrive
 {
     // Declare OpMode members.
+    RingSensors disSensor;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDriveBack = null;
     private DcMotor rightDriveBack = null;
@@ -69,6 +72,8 @@ public class DriveTrain_Protype extends TeleDrive
         super.init();
         telemetry.addData("Status", "Initialized");
 
+        disSensor = new RingSensors(telemetry,hardwareMap);
+        disSensor.init();
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -157,6 +162,9 @@ public class DriveTrain_Protype extends TeleDrive
         leftDriveBack.setPower(leftBP);
         rightDriveFront.setPower(rightFP);
         rightDriveBack.setPower(rightBP);
+
+        disSensor.telemetry();
+        telemetry.update();
     }
 
     /*
