@@ -12,7 +12,7 @@ class MecanumDrive {
     private DcMotor backRight;
     private DcMotor backLeft;
 
-    public static double GEAR_RATIO = 1.0; // for simulator - ours should be 0.5f;
+    public static double GEAR_RATIO = 0.1; // for simulator - ours should be 0.5f;
     public static double WHEEL_RADIUS = 5.0;  // 5 cm
     public static double TICKS_PER_ROTATION = 1120.0;  // From NeveRest (for simulator)  GoBilda should be 383.6f
 
@@ -64,7 +64,7 @@ class MecanumDrive {
         backRight.setPower(brSpeed / largest);
     }
 
-    void driveMecanum(double forward, double strafe, double rotate) {
+     public void driveMecanum(double forward, double strafe, double rotate) {
         double frontLeftSpeed = forward + strafe + rotate;
         double frontRightSpeed = forward - strafe - rotate;
         double backLeftSpeed = forward - strafe + rotate;

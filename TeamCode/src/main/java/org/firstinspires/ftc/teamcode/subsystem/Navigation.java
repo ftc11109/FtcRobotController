@@ -41,6 +41,12 @@ public class Navigation {
         return angleUnit.fromRadians(angles.firstAngle + imuOffset);
     }
 
+    public double getImuAngularOrientation(){
+       return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+
+    }
+
+
     public void driveFieldRelative(double x, double y, double rotate) {
         Polar drive = Polar.fromCartesian(x, y);
         double heading = getHeading(AngleUnit.RADIANS);

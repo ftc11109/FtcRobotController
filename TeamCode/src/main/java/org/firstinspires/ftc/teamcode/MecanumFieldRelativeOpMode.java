@@ -25,10 +25,12 @@ public class MecanumFieldRelativeOpMode extends OpMode {
         Polar g1RightJoystick = Polar.fromCartesian(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         double r = g1RightJoystick.getR();
-        if (r >= 0.8) {
+        if (r >= 0.1) {
             robot.nav.driveFieldRelativeAngle(strafe, forward, g1RightJoystick.getTheta());
         } else {
             robot.nav.driveFieldRelative(strafe, forward, 0.0);
         }
+
+        telemetry.addData("direction",robot.nav.getImuAngularOrientation());
     }
 }

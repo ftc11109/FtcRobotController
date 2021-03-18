@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="prototype", group="Iterative Opmode")
 //@Disabled
-public class DriveTrain_Protype extends OpMode
+public class DriveTrain_Protype extends TeleDrive
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -66,6 +66,7 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void init() {
+        super.init();
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -93,6 +94,7 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void init_loop() {
+    super.init_loop();
     }
 
     /*
@@ -100,7 +102,9 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void start() {
+        super.start();
         runtime.reset();
+
     }
 
     /*
@@ -108,6 +112,7 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void loop() {
+        super.loop();
         mecanumDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
         if (gamepad1.dpad_left){
@@ -159,6 +164,7 @@ public class DriveTrain_Protype extends OpMode
      */
     @Override
     public void stop() {
+    super.stop();
     }
 
 }

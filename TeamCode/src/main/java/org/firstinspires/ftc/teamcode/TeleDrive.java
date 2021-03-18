@@ -302,7 +302,7 @@ public abstract class TeleDrive extends OpMode {
     public void init() {
         String address = "192.168.43.1";
         //home wifi port forwarding
-        int port = 12345;
+        int port = 11039;
         canRunGamepadThread = false;
 
         try {
