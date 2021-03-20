@@ -65,7 +65,7 @@ public class RingSensors {
     private DistanceSensor intakeSensor1;
     private DistanceSensor intakeSensor2;
 
-//    private DistanceSensor elevatorSensor;
+    private DistanceSensor elevatorSensor;
 
     private ElapsedTime ringTimer = new ElapsedTime();
 
@@ -74,24 +74,19 @@ public class RingSensors {
         intakeSensor0 = hardwareMap.get(DistanceSensor.class, "int1");
         intakeSensor1 = hardwareMap.get(DistanceSensor.class, "int2");
         intakeSensor2 = hardwareMap.get(DistanceSensor.class, "int3");
-//        elevatorSensor = hardwareMap.get(DistanceSensor.class, "elevator sensor");
+        elevatorSensor = hardwareMap.get(DistanceSensor.class, "eleSensor");
     }
 
     public double getIntake0Distance() {
         return intakeSensor0.getDistance(DistanceUnit.MM);
     }
-
     public double getIntake1Distance() {
         return intakeSensor1.getDistance(DistanceUnit.MM);
     }
-
     public double getIntake2Distance() {
         return intakeSensor2.getDistance(DistanceUnit.MM);
     }
-//    public double getElevatorDistance(){
-//        return elevatorSensor.getDistance(DistanceUnit.MM);
-//    }
-
+    public double getEle2Distance(){ return elevatorSensor.getDistance(DistanceUnit.MM);}
 
     public boolean isRingInIntake() {
         if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)) {
@@ -104,6 +99,9 @@ public class RingSensors {
         }
     }
 
+    public boolean isRingInEle(){
+    return false;
+    }
 //    public boolean isRingInElevator(){
 //        return getElevatorDistance() < 3.75*25.4;
 //    }
@@ -112,10 +110,10 @@ public class RingSensors {
 
 
         // generic DistanceSensor methods.
-        telemetry.addData("deviceName", intakeSensor0.getDeviceName());
-        telemetry.addData("range0", String.format("%.01f mm", intakeSensor0.getDistance(DistanceUnit.MM)));
-        telemetry.addData("range1", intakeSensor1.getDistance(DistanceUnit.MM));
-        telemetry.addData("range2", intakeSensor2.getDistance(DistanceUnit.MM));
+        telemetry.addData("range0", getIntake0Distance());
+        telemetry.addData("range1", getIntake1Distance());
+        telemetry.addData("range2", getIntake2Distance());
+        telemetry.addData("elevator Range", getEle2Distance());
 
         telemetry.addData("isRing?", isRingInIntake());
 

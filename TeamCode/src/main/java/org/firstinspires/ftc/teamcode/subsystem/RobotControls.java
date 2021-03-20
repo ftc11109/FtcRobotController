@@ -21,7 +21,7 @@ public class RobotControls {
         return -gamepad1.right_stick_x;
     }
 
-    public boolean intake(){
+    public boolean intakeToggle(){
         return gamepad1.right_bumper;
     }
     public boolean outtake(){
@@ -42,9 +42,13 @@ public class RobotControls {
     public boolean slowMode(){
         return gamepad1.y;
     }
-    public boolean shooterStop(){
+    public boolean speedMode(){
         return gamepad1.b;
     }
+
+//    public boolean shooterStop(){
+//        return gamepad1.b;
+//    }
     public boolean upperTransitionIntake(){ return gamepad1.dpad_left;}
     public boolean upperTransitionOuttake(){ return gamepad1.dpad_right;}
     public boolean increaseShooterSpeed(){ return gamepad1.start;}

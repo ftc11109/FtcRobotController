@@ -192,10 +192,10 @@ public class ImuPIDTurning {
             leftPower = Range.clip(leftPower, -power, power);
             rightPower = Range.clip(rightPower, -power, power);
 
-            leftmotorB.setPower(speedByBusVoltage(leftPower));
-            rightmotorB.setPower(speedByBusVoltage(rightPower));
-            leftmotorF.setPower(speedByBusVoltage(leftPower));
-            rightmotorF.setPower(speedByBusVoltage(rightPower));
+            leftmotorB.setPower(leftPower);
+            rightmotorB.setPower(rightPower);
+            leftmotorF.setPower(leftPower);
+            rightmotorF.setPower(rightPower);
 
             telemetry.addData("left pow", leftPower);
             telemetry.addData("right pow", rightPower);
@@ -234,11 +234,11 @@ public class ImuPIDTurning {
             double error = Math.abs(getDirection()) - Math.abs(degrees);
             if (error < 0) {
                 if (error > -22) {
-                    leftmotorB.setPower(speedByBusVoltage(slowLeft));
-                    rightmotorB.setPower(speedByBusVoltage(slowRight));
+                    leftmotorB.setPower(slowLeft);
+                    rightmotorB.setPower(slowRight);
                 } else {
-                    leftmotorB.setPower(speedByBusVoltage(leftPower));
-                    rightmotorB.setPower(speedByBusVoltage(rightPower));
+                    leftmotorB.setPower(leftPower);
+                    rightmotorB.setPower(rightPower);
 
                 }
             } else {

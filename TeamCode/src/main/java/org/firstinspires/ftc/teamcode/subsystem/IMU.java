@@ -24,16 +24,34 @@ public class IMU {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
         imu.initialize(params);
+
     }
 
-    public double getheading(AngleUnit angleUnit) {
+    public double getHeading(AngleUnit angleUnit) {
         Orientation angle;
         angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
 
         return angleUnit.fromDegrees(angle.firstAngle);
     }
 
+    public double getPitch(AngleUnit angleUnit) {
+        Orientation angle;
+        angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+
+        return angleUnit.fromDegrees(angle.secondAngle);
+    }
+
+    public double getRoll(AngleUnit angleUnit) {
+        Orientation angle;
+        angle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+
+        return angleUnit.fromDegrees(angle.thirdAngle);
+    }
+
+
     public void telemetry() {
-        telemetry.addData("heading", getheading(AngleUnit.DEGREES));
+        telemetry.addData("heading", getHeading(AngleUnit.DEGREES));
+        telemetry.addData("picth", getPitch(AngleUnit.DEGREES));
+        telemetry.addData("roll", getRoll(AngleUnit.DEGREES));
     }
 }

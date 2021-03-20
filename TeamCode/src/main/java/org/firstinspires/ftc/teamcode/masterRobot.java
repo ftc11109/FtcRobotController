@@ -70,6 +70,11 @@ public class masterRobot extends OpMode {
     boolean isShooterOn = false;
     boolean lastTriggerState = false;
 
+    boolean isIntakeOn = false;
+    boolean lastButtonState = false;
+
+    boolean slowMode = true;
+
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
 
@@ -89,7 +94,7 @@ public class masterRobot extends OpMode {
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
 
-        telemetry.addData("ver","1.33");
+        telemetry.addData("ver","1.35");
     }
 
     /*
@@ -113,11 +118,18 @@ public class masterRobot extends OpMode {
     @Override
     public void loop() {
         ////////////drive
-//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), -imu.getheading(AngleUnit.DEGREES) );
+        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, -imu.getHeading(AngleUnit.DEGREES) );
 
 // working robot centric mode
-        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), controls.slowMode(), 0);
+//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
 
+        if (controls.slowMode()){
+            slowMode = true;
+        }
+
+        if (controls.speedMode()){
+            slowMode = false;
+        }
         /////////////transition
         transtition.doNothingMode();
         if (disSensors.isRingInIntake()) {
@@ -141,13 +153,19 @@ public class masterRobot extends OpMode {
         transtition.runMotors();
 
         /////////////intake
-        if (controls.intake()) {
-            intake.intake();
-        } else if (controls.outtake()) {
-            intake.outtake();
-        } else {
-            intake.doNothing();
+//        if (controls.intake()) {
+//            intake.intake();
+//        } else if (controls.outtake()) {
+//            intake.outtake();
+//        } else {
+//            intake.doNothing();
+//        }
+
+        if (controls.intakeToggle() && !lastButtonState){
+            isIntakeOn = !isIntakeOn;
         }
+        lastButtonState = controls.shooterToggle();
+        intake.setIntakeOn(isIntakeOn);
 
 
         ///////////shooter

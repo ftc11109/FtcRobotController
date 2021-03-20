@@ -100,7 +100,7 @@ public class Drive {
     }
 
     public void drive(double x, double y, double rx, boolean slowMode, double gyroAngle) {
-        if (!slowMode) {
+        if (slowMode) {
             drive(x * SLOW_MULTIPLiER, y * SLOW_MULTIPLiER, rx * SLOW_MULTIPLiER, gyroAngle);
         } else {
             drive(x, y, rx, gyroAngle);

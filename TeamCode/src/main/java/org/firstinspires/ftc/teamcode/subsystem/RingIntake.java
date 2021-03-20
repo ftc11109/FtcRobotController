@@ -72,6 +72,14 @@ public class RingIntake
         intakeMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "intake motor");
     }
 
+    public void setIntakeOn(boolean intakeOn) {
+        if (intakeOn) {
+            intake();
+        } else {
+            doNothing();
+        }
+    }
+
 
 
     public void intake() { intakeMotor.setVelocity(INTAKE_SPEED); }
