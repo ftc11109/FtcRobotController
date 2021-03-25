@@ -100,7 +100,7 @@ public class RingSensors {
     }
 
     public boolean isRingInEle(){
-    return false;
+    return getEle2Distance() < 30;
     }
 //    public boolean isRingInElevator(){
 //        return getElevatorDistance() < 3.75*25.4;

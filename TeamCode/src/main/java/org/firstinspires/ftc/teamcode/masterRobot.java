@@ -118,10 +118,10 @@ public class masterRobot extends OpMode {
     @Override
     public void loop() {
         ////////////drive
-        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, -imu.getHeading(AngleUnit.DEGREES) );
+//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, -imu.getHeading(AngleUnit.DEGREES) );
 
 // working robot centric mode
-//        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
+        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
 
         if (controls.slowMode()){
             slowMode = true;
@@ -136,9 +136,9 @@ public class masterRobot extends OpMode {
             transtition.intakeTransitionMode();
 
         }
-//        if (disSensors.isRingInElevator()) {
-//            transtition.doNothingMode();
-//        }
+        if (disSensors.isRingInEle()) {
+            transtition.doNothingMode();
+        }
 
         if (controls.spitOut()) {
             transtition.reverseIntakeTransitionMode();

@@ -56,7 +56,7 @@ public class TestRotate extends LinearOpMode {
 //        IMU.sleepAndLog(2000);
 //        IMU.rotate(0, 0.40,10);
 //        IMU.sleepAndLog(2000);
-        IMU.rotate(90, 0.40, 10);
+        IMU.rotate(135, 0.5, 10);
 //        IMU.sleepAndLog(2000);
 //        IMU.rotate(-180, 0.40,10);
 //        IMU.sleepAndLog(2000);

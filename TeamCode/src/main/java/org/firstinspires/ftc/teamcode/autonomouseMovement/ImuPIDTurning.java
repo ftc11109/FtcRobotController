@@ -101,8 +101,6 @@ public class ImuPIDTurning {
 
         lastAngles = angles;
 
-        telemetry.addData("Imu angle", angles.firstAngle);
-        telemetry.update();
         return globalAngle;
     }
 
@@ -157,9 +155,9 @@ public class ImuPIDTurning {
     /**
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      *
-     * @param degrees Degrees to turn, + is left - is right
+     * @param targetAngle Degrees to turn, + is left - is right
      */
-    public void rotate(int degrees, double power, double timeOutS) {
+    public void rotate(int targetAngle, double power, double timeOutS) {
         double leftPower, rightPower;
         double error;
         //LEFT IS - RIGHT is +
@@ -170,10 +168,10 @@ public class ImuPIDTurning {
         // clockwise (right).
 
         power = Math.abs(power);
-        if (degrees < 0) {   // turn right.
+        if (targetAngle < 0) {   // turn right.
             leftPower = -power;
             rightPower = power;
-        } else if (degrees > 0) {   // turn left.
+        } else if (targetAngle > 0) {   // turn left.
             leftPower = power;
             rightPower = -power;
         } else return;
@@ -181,13 +179,13 @@ public class ImuPIDTurning {
         runtime.reset();
         // set power to rotate.
         while (runtime.seconds() < timeOutS) {
-            telemetry.addData("angle", getAngle());
-            telemetry.update();
 
-            error = getAngle() - degrees;
+            error = targetAngle - getAngle();
 
             leftPower = P_RATE * error;
             rightPower = P_RATE * -error;
+//            leftPower = power;
+//            rightPower = -power;
 
             leftPower = Range.clip(leftPower, -power, power);
             rightPower = Range.clip(rightPower, -power, power);
@@ -199,9 +197,15 @@ public class ImuPIDTurning {
 
             telemetry.addData("left pow", leftPower);
             telemetry.addData("right pow", rightPower);
-            if (inRange(1, -1, getAngle(), degrees)) {
-                rightmotorB.setPower(0);
+            telemetry.addData("angle", getAngle());
+            telemetry.addData("target", targetAngle);
+            telemetry.addData("error", error);
+            telemetry.update();
+            if (inRange(1, -1, getAngle(), targetAngle)) {
                 leftmotorB.setPower(0);
+                rightmotorB.setPower(0);
+                leftmotorF.setPower(0);
+                rightmotorF.setPower(0);
                 break;
             }
         }
