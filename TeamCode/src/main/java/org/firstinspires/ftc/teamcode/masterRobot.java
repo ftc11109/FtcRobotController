@@ -33,7 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.subsystem.IMU;
 import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
@@ -41,6 +40,7 @@ import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
 import org.firstinspires.ftc.teamcode.subsystem.RobotControls;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -66,17 +66,21 @@ public class masterRobot extends OpMode {
     RobotControls controls;
     Shooter shooter;
     IMU imu;
+    WebCam webCam;
+
 
     boolean isShooterOn = false;
-    boolean lastTriggerState = false;
+    boolean shooterSpinUpState = false;
+    boolean lastAutoShootState = false;
 
     boolean isIntakeOn = false;
-    boolean lastButtonState = false;
+    boolean intakeState = false;
 
     boolean slowMode = true;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
+    private ElapsedTime polycordTime = new ElapsedTime();
 
     @Override
     public void init() {
@@ -89,10 +93,12 @@ public class masterRobot extends OpMode {
         transtition = new RingTranstition(telemetry, hardwareMap);
         transtition.init();
         controls = new RobotControls(gamepad1, gamepad2);
-        shooter = new Shooter(telemetry, hardwareMap);
+        shooter = new Shooter(telemetry, hardwareMap, webCam);
         shooter.init();
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
+        webCam = new WebCam(telemetry, hardwareMap);
+        webCam.init();
 
         telemetry.addData("ver","1.35");
     }
@@ -146,34 +152,43 @@ public class masterRobot extends OpMode {
         if (controls.polycordIntake()) {
             transtition.intakeTransitionMode();
         }
-        if (controls.shoot()) {
-            transtition.shootingTransitionMode();
+        if (controls.shootToggle() && shooter.isUpToSpeed()) {
+            if (polycordTime.milliseconds() > 300){
+                transtition.shootingTransitionMode();
+            } else {
+                transtition.reverseIntakeTransitionMode();
+            }
+        } else {
+            polycordTime.reset();
         }
 
         transtition.runMotors();
 
         /////////////intake
-//        if (controls.intake()) {
-//            intake.intake();
-//        } else if (controls.outtake()) {
-//            intake.outtake();
-//        } else {
-//            intake.doNothing();
-//        }
 
-        if (controls.intakeToggle() && !lastButtonState){
+        if (controls.intakeToggle() && !intakeState){
             isIntakeOn = !isIntakeOn;
         }
-        lastButtonState = controls.shooterToggle();
+        intakeState = controls.shooterSpinUp();
         intake.setIntakeOn(isIntakeOn);
 
 
-        ///////////shooter
-        if (controls.shooterToggle() && !lastTriggerState){
-            isShooterOn = !isShooterOn;
+        if (controls.outtake()){
+            intake.outtake();
         }
-        lastTriggerState = controls.shooterToggle();
-        shooter.setShootOn(isShooterOn);
+
+        ///////////shooter
+        if (controls.autoShootToggle()){
+            autoShoot();
+        }
+
+        if (controls.shooterSpinUp() && !shooterSpinUpState){
+            isShooterOn = !isShooterOn;
+            shooter.setShootOn(isShooterOn);
+        }
+        shooterSpinUpState = controls.shooterSpinUp();
+
+
 
         if (controls.increaseShooterSpeed() && controlTime.milliseconds() > 500){
             shooter.increaseSpeed();
@@ -190,6 +205,10 @@ public class masterRobot extends OpMode {
         }
 
         shooter.loop();
+
+        /////////////webcam
+        webCam.execute();
+
         /////////////telemetry
         disSensors.telemetry();
         imu.telemetry();
@@ -207,4 +226,25 @@ public class masterRobot extends OpMode {
     public void stop() {
     }
 
+    public void autoShoot(){
+        ElapsedTime autoTime = new ElapsedTime();
+        shooter.shooterSpinUp();
+        while (!shooter.isUpToSpeed()) {
+        //TODO:get toggle to work with return
+            if (controls.autoShootToggle()){
+                shooter.doNothing();
+                return;
+            }
+        }
+        autoTime.reset();
+        transtition.shootingTransitionMode();
+        while (autoTime.seconds() < 5){
+            //TODO:get toggle to work with break
+            if (controls.autoShootToggle()){
+                break;
+            }
+        }
+        shooter.doNothing();
+        transtition.doNothingMode();
+    }
 }

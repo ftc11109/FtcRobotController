@@ -51,11 +51,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RingTranstition {
 
-    private static final double REVERSE_UPPER_BELTS_SPEED = 750.0;
-    private static final double SHOOTING_UPPER_BELTS_SPEED = -750.0;
-    private static final double INTAKE_UPPER_BELTS_SPEED = -750.0;
-    private static final double SHOOTING_LOWER_BELTS_SPEED = 1500.0;
-    private static final double LOWER_BELT_INTAKE_SPEED = 1500.0;
+    private static final double REVERSE_UPPER_BELTS_SPEED = 1000.0;
+    private static final double SHOOTING_UPPER_BELTS_SPEED = -1250.0;
+    private static final double INTAKE_UPPER_BELTS_SPEED = -1000.0;
+    private static final double SHOOTING_LOWER_BELTS_SPEED = 750.0;
+    private static final double LOWER_BELT_INTAKE_SPEED = 1000.0;
     public static final double LOWER_BELTS_SPIT_OUT_SPEED = -1000.0;
     private double lowerMotorSpeed;
     private double upperMotorSpeed;
@@ -118,12 +118,13 @@ public class RingTranstition {
     }
 
     public void reverseIntakeTransitionMode() {
+        runUpperMotor(REVERSE_UPPER_BELTS_SPEED);
         runLowerMotor(LOWER_BELTS_SPIT_OUT_SPEED);
     }
 
     public void telemetery(){
-        telemetry.addData("polyCord speed", eleBeltsRampBelts.getVelocity());
-        telemetry.addData("polyCord speed", eleWheelsLowerBelts.getVelocity());
+        telemetry.addData("ele polyCord speed", eleBeltsRampBelts.getVelocity());
+        telemetry.addData("lower polyCord speed", eleWheelsLowerBelts.getVelocity());
 
     }
 }

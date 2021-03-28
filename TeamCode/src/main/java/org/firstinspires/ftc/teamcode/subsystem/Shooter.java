@@ -3,26 +3,34 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Shooter {
+
+    private static final double P_RATE = 0.07;
+
     //power shot speed 1000
-    double targetShootSpeed = 1400.0;
+    double targetShootSpeed = 1300.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
+    WebCam webCam;
 
-    public Shooter(Telemetry telemetry, HardwareMap hardwareMap) {
+    public Shooter(Telemetry telemetry, HardwareMap hardwareMap, WebCam webCam) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+        this.webCam = webCam;
     }
 
     private DcMotorEx shooterMotor;
     private double minSpeed;
     private double minAmps;
     private double maxAmps;
+    private ElapsedTime rangeTime = new ElapsedTime();
 
+    boolean stablizationMode = true;
 
     public void init() {
 
@@ -32,6 +40,29 @@ public class Shooter {
     public void doNothing() {
         shooterMotor.setVelocity(0);
     }
+
+    public boolean isUpToSpeed() {
+        if (stablizationMode) {
+            if (shooterMotor.getVelocity() > targetShootSpeed - 75 && shooterMotor.getVelocity() < targetShootSpeed + 75 ) {
+                if (rangeTime.milliseconds() > 250){
+                    stablizationMode = false;
+                    return true;
+                } else{
+                    return false;
+                }
+            } else {
+                rangeTime.reset();
+                return false;
+            }
+        } else {
+            if (shooterMotor.getVelocity() < targetShootSpeed - 200) {
+                stablizationMode = true;
+            }
+            return true;
+        }
+
+    }
+
 
     public void shooterSpinUp() {
         shooterMotor.setVelocity(targetShootSpeed);
@@ -46,12 +77,15 @@ public class Shooter {
     }
 
     public void increaseSpeed() {
-        targetShootSpeed = targetShootSpeed + 100;
+        targetShootSpeed = targetShootSpeed + 25;
+        shooterMotor.setVelocity(targetShootSpeed);
     }
 
     public void decreaseSpeed() {
-        targetShootSpeed = targetShootSpeed - 100;
+        targetShootSpeed = targetShootSpeed - 25;
+        shooterMotor.setVelocity(targetShootSpeed);
     }
+
 
     public void ResetMinMax() {
         minAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
@@ -63,6 +97,11 @@ public class Shooter {
         minAmps = Math.min(minAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
         minSpeed = Math.min(minSpeed, shooterMotor.getVelocity());
         maxAmps = Math.max(maxAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
+        isUpToSpeed();
+    }
+
+    public void autoShootStart() {
+        shooterSpinUp();
     }
 
     public void telemetry() {

@@ -8,8 +8,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Drive {
 
-    public static final double SLOW_MULTIPLiER = 0.35;
-
+    public static final double SLOW_MULTIPLIER = 0.35;
+    public static final double STRAFE_SLOW_MULTIPLIER = 0.5;
+    public static final double FAST_SLOW_MULTIPLIER = 0.75;
     public Drive(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -93,15 +94,15 @@ public class Drive {
         }
 
 
-        leftDriveFront.setPower(leftFP);
-        leftDriveBack.setPower(leftBP);
-        rightDriveFront.setPower(rightFP);
-        rightDriveBack.setPower(rightBP);
+        leftDriveFront.setPower(leftFP*FAST_SLOW_MULTIPLIER);
+        leftDriveBack.setPower(leftBP*FAST_SLOW_MULTIPLIER);
+        rightDriveFront.setPower(rightFP*FAST_SLOW_MULTIPLIER);
+        rightDriveBack.setPower(rightBP*FAST_SLOW_MULTIPLIER);
     }
 
     public void drive(double x, double y, double rx, boolean slowMode, double gyroAngle) {
         if (slowMode) {
-            drive(x * SLOW_MULTIPLiER, y * SLOW_MULTIPLiER, rx * SLOW_MULTIPLiER, gyroAngle);
+            drive(x * SLOW_MULTIPLIER, y * STRAFE_SLOW_MULTIPLIER, rx * SLOW_MULTIPLIER, gyroAngle);
         } else {
             drive(x, y, rx, gyroAngle);
         }
