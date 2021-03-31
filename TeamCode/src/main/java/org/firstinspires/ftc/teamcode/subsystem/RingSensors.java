@@ -111,7 +111,7 @@ public class RingSensors {
 //        eleTimer.reset();
 //        return false;
 //    }
-    return getEle2Distance() < 35;
+    return getEle2Distance() < 39;
     }
 
     public void telemetry() {
