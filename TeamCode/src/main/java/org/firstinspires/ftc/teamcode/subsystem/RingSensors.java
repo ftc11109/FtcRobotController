@@ -68,6 +68,7 @@ public class RingSensors {
     private DistanceSensor elevatorSensor;
 
     private ElapsedTime ringTimer = new ElapsedTime();
+    private ElapsedTime eleTimer = new ElapsedTime();
 
     public void init() {
         // you can use this as a regular DistanceSensor.
@@ -100,11 +101,18 @@ public class RingSensors {
     }
 
     public boolean isRingInEle(){
+//    if (getEle2Distance() < 30){
+//        if (eleTimer.milliseconds() > 500){
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    } else {
+//        eleTimer.reset();
+//        return false;
+//    }
     return getEle2Distance() < 30;
     }
-//    public boolean isRingInElevator(){
-//        return getElevatorDistance() < 3.75*25.4;
-//    }
 
     public void telemetry() {
 

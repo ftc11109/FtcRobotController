@@ -75,6 +75,8 @@ public class masterRobot extends OpMode {
 
     boolean isIntakeOn = false;
     boolean intakeState = false;
+    boolean lastIsUpToSpeed = false;
+    boolean justShot = true;
 
     boolean slowMode = true;
 
@@ -100,7 +102,7 @@ public class masterRobot extends OpMode {
         webCam = new WebCam(telemetry, hardwareMap);
         webCam.init();
 
-        telemetry.addData("ver","1.35");
+        telemetry.addData("ver", "1.35");
     }
 
     /*
@@ -129,20 +131,43 @@ public class masterRobot extends OpMode {
 // working robot centric mode
         Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
 
-        if (controls.slowMode()){
+        if (controls.slowMode()) {
             slowMode = true;
         }
 
-        if (controls.speedMode()){
+        if (controls.speedMode()) {
             slowMode = false;
         }
         /////////////transition
         transtition.doNothingMode();
-        if (disSensors.isRingInIntake()) {
+
+        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
+            justShot = true;
+        }
+        lastIsUpToSpeed = shooter.isUpToSpeed();
+
+        if (justShot && !disSensors.isRingInEle()) {
+            if (controls.shootToggle()) {
+                transtition.shootingTransitionMode();
+            } else {
+                transtition.doNothingMode();
+            }
+        } else {
+            transtition.doNothingMode();
+            justShot = false;
+        }
+
+        if (controls.shootToggle() && shooter.isUpToSpeed() && !justShot) {
+            transtition.shootingTransitionMode();
+        } else {
+            polycordTime.reset();
+        }
+
+        if (disSensors.isRingInIntake() && !controls.shootToggle()) {
             transtition.intakeTransitionMode();
 
         }
-        if (disSensors.isRingInEle()) {
+        if (disSensors.isRingInEle() && !controls.shootToggle()) {
             transtition.doNothingMode();
         }
 
@@ -152,54 +177,44 @@ public class masterRobot extends OpMode {
         if (controls.polycordIntake()) {
             transtition.intakeTransitionMode();
         }
-        if (controls.shootToggle() && shooter.isUpToSpeed()) {
-            if (polycordTime.milliseconds() > 300){
-                transtition.shootingTransitionMode();
-            } else {
-                transtition.reverseIntakeTransitionMode();
-            }
-        } else {
-            polycordTime.reset();
-        }
 
         transtition.runMotors();
 
         /////////////intake
 
-        if (controls.intakeToggle() && !intakeState){
+        if (controls.intakeToggle() && !intakeState) {
             isIntakeOn = !isIntakeOn;
         }
         intakeState = controls.shooterSpinUp();
         intake.setIntakeOn(isIntakeOn);
 
 
-        if (controls.outtake()){
+        if (controls.outtake()) {
             intake.outtake();
         }
 
         ///////////shooter
-        if (controls.autoShootToggle()){
+        if (controls.autoShootToggle()) {
             autoShoot();
         }
 
-        if (controls.shooterSpinUp() && !shooterSpinUpState){
+        if (controls.shooterSpinUp() && !shooterSpinUpState) {
             isShooterOn = !isShooterOn;
             shooter.setShootOn(isShooterOn);
         }
         shooterSpinUpState = controls.shooterSpinUp();
 
 
-
-        if (controls.increaseShooterSpeed() && controlTime.milliseconds() > 500){
+        if (controls.increaseShooterSpeed() && controlTime.milliseconds() > 500) {
             shooter.increaseSpeed();
             controlTime.reset();
         }
 
-        if (controls.resetMinAndMax()){
+        if (controls.resetMinAndMax()) {
             shooter.ResetMinMax();
         }
 
-        if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500){
+        if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500) {
             shooter.decreaseSpeed();
             controlTime.reset();
         }
@@ -226,21 +241,21 @@ public class masterRobot extends OpMode {
     public void stop() {
     }
 
-    public void autoShoot(){
+    public void autoShoot() {
         ElapsedTime autoTime = new ElapsedTime();
         shooter.shooterSpinUp();
         while (!shooter.isUpToSpeed()) {
-        //TODO:get toggle to work with return
-            if (controls.autoShootToggle()){
+            //TODO:get toggle to work with return
+            if (controls.autoShootToggle()) {
                 shooter.doNothing();
                 return;
             }
         }
         autoTime.reset();
         transtition.shootingTransitionMode();
-        while (autoTime.seconds() < 5){
+        while (autoTime.seconds() < 5) {
             //TODO:get toggle to work with break
-            if (controls.autoShootToggle()){
+            if (controls.autoShootToggle()) {
                 break;
             }
         }
