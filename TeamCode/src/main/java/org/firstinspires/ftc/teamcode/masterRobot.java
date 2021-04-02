@@ -40,7 +40,6 @@ import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
 import org.firstinspires.ftc.teamcode.subsystem.RobotControls;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
-import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -59,6 +58,10 @@ import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 @TeleOp(name = "master", group = "AA 11109")
 public class masterRobot extends OpMode {
     // Declare OpMode members.
+    enum transitionShooterMode {
+        Advancing, Pause, Ready, Shooting
+    }
+
     RingIntake intake;
     Drive Drive;
     RingTranstition transtition;
@@ -66,7 +69,7 @@ public class masterRobot extends OpMode {
     RobotControls controls;
     Shooter shooter;
     IMU imu;
-    WebCam webCam;
+//    WebCam webCam;
 
 
     boolean isShooterOn = false;
@@ -77,12 +80,14 @@ public class masterRobot extends OpMode {
     boolean intakeState = false;
     boolean lastIsUpToSpeed = false;
     boolean justShot = true;
+    transitionShooterMode transitionState = transitionShooterMode.Advancing;
 
-    boolean slowMode = true;
+    boolean slowMode = false;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
-    private ElapsedTime polycordTime = new ElapsedTime();
+    private ElapsedTime pauseTransitionTime = new ElapsedTime();
+
 
     @Override
     public void init() {
@@ -95,12 +100,12 @@ public class masterRobot extends OpMode {
         transtition = new RingTranstition(telemetry, hardwareMap);
         transtition.init();
         controls = new RobotControls(gamepad1, gamepad2);
-        shooter = new Shooter(telemetry, hardwareMap, webCam);
+        shooter = new Shooter(telemetry, hardwareMap);
         shooter.init();
         imu = new IMU(telemetry, hardwareMap);
         imu.init();
-        webCam = new WebCam(telemetry, hardwareMap);
-        webCam.init();
+//        webCam = new WebCam(telemetry, hardwareMap);
+//        webCam.init();
 
         telemetry.addData("ver", "1.35");
     }
@@ -125,6 +130,7 @@ public class masterRobot extends OpMode {
      */
     @Override
     public void loop() {
+
         ////////////drive
 //        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, -imu.getHeading(AngleUnit.DEGREES) );
 
@@ -141,27 +147,46 @@ public class masterRobot extends OpMode {
         /////////////transition
         transtition.doNothingMode();
 
-        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
-            justShot = true;
-        }
-        lastIsUpToSpeed = shooter.isUpToSpeed();
+        // feeder states: Advancing, Pause, Ready
+        //
 
-        if (justShot && !disSensors.isRingInEle()) {
-            if (controls.shootToggle()) {
-                transtition.shootingTransitionMode();
+        if (controls.shootToggle()) {
+            if (transitionState == transitionShooterMode.Advancing) {
+                if (disSensors.isRingInEle()) {
+                    transitionState = transitionShooterMode.Pause;
+                } else {
+                    transtition.advancingTransitionMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.Pause) {
+                if (pauseTransitionTime.milliseconds() > 250) {
+                    transitionState = transitionShooterMode.Ready;
+                } else {
+                    transtition.doNothingMode();
+                }
             } else {
-                transtition.doNothingMode();
+                pauseTransitionTime.reset();
+            }
+            if (transitionState == transitionShooterMode.Ready) {
+                if (shooter.isUpToSpeed()) {
+                    transitionState = transitionShooterMode.Shooting;
+                } else {
+                    transtition.doNothingMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.Shooting) {
+                if (justShot) {
+                    transitionState = transitionShooterMode.Advancing;
+                    justShot = false;
+                } else {
+                    transtition.shootingTransitionMode();
+                }
             }
         } else {
-            transtition.doNothingMode();
-            justShot = false;
+            transitionState = transitionShooterMode.Advancing;
         }
 
-        if (controls.shootToggle() && shooter.isUpToSpeed() && !justShot) {
-            transtition.shootingTransitionMode();
-        } else {
-            polycordTime.reset();
-        }
+
 
         if (disSensors.isRingInIntake() && !controls.shootToggle()) {
             transtition.intakeTransitionMode();
@@ -194,6 +219,12 @@ public class masterRobot extends OpMode {
         }
 
         ///////////shooter
+
+        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
+            justShot = true;
+        }
+        lastIsUpToSpeed = shooter.isUpToSpeed();
+
         if (controls.autoShootToggle()) {
             autoShoot();
         }
@@ -222,7 +253,7 @@ public class masterRobot extends OpMode {
         shooter.loop();
 
         /////////////webcam
-        webCam.execute();
+//        webCam.execute();
 
         /////////////telemetry
         disSensors.telemetry();

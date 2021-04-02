@@ -18,7 +18,7 @@ public class Shooter {
     Telemetry telemetry;
     WebCam webCam;
 
-    public Shooter(Telemetry telemetry, HardwareMap hardwareMap, WebCam webCam) {
+    public Shooter(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.webCam = webCam;
