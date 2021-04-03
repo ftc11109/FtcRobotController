@@ -55,6 +55,9 @@ public class RobotControls {
     }
 
     public boolean shooterSpinUp() {
+        if (gamepad1.left_trigger > 0.5){
+            shootState = false;
+        }
         return gamepad1.left_trigger > 0.5;
     }
 
