@@ -150,7 +150,7 @@ public class masterRobot extends OpMode {
         // feeder states: Advancing, Pause, Ready
         //
 
-        if (controls.shootToggle()) {
+        if (isShooterOn) {
             if (transitionState == transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle()) {
                     transitionState = transitionShooterMode.Pause;
@@ -168,7 +168,7 @@ public class masterRobot extends OpMode {
                 pauseTransitionTime.reset();
             }
             if (transitionState == transitionShooterMode.Ready) {
-                if (shooter.isUpToSpeed()) {
+                if (shooter.isUpToSpeed() && controls.shootToggle()) {
                     transitionState = transitionShooterMode.Shooting;
                 } else {
                     transtition.doNothingMode();
