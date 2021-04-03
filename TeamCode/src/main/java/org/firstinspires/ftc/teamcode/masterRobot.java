@@ -88,7 +88,7 @@ public class masterRobot extends OpMode {
     private ElapsedTime controlTime = new ElapsedTime();
     private ElapsedTime pauseTransitionTime = new ElapsedTime();
     private ElapsedTime loopTimer = new ElapsedTime();
-    private int lastTime = 0;
+    private double lastTime = 0;
     @Override
     public void init() {
         intake = new RingIntake(telemetry, hardwareMap);
@@ -107,7 +107,7 @@ public class masterRobot extends OpMode {
 //        webCam = new WebCam(telemetry, hardwareMap);
 //        webCam.init();
 
-        telemetry.addData("ver", "1.37");
+        telemetry.addData("ver", "1.38");
     }
 
     /*
@@ -256,14 +256,13 @@ public class masterRobot extends OpMode {
 //        webCam.execute();
 
         /////////////telemetry
+        telemetry.addData("loop time", lastTime - loopTimer.milliseconds());
+        lastTime = loopTimer.milliseconds();
         disSensors.telemetry();
         imu.telemetry();
         transtition.telemetery();
         intake.telemetry();
         shooter.telemetry();
-        telemetry.addData("just shot", justShot);
-        telemetry.addData("shoot state", transitionState.toString());
-        telemetry.addData("is up to speed", shooter.isUpToSpeed());
         telemetry.update();
     }
 
