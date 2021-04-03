@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RingSensors {
 
-    private static final double RING_WAIT = 575;
+    private static final double RING_WAIT = 650;
 
     public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
