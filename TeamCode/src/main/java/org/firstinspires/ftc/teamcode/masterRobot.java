@@ -258,12 +258,12 @@ public class masterRobot extends OpMode {
         /////////////telemetry
         telemetry.addData("loop time", lastTime - loopTimer.milliseconds());
         lastTime = loopTimer.milliseconds();
-        disSensors.telemetry();
-        imu.telemetry();
-        transtition.telemetery();
-        intake.telemetry();
-        shooter.telemetry();
-        telemetry.update();
+//        disSensors.telemetry();
+//        imu.telemetry();
+//        transtition.telemetery();
+//        intake.telemetry();
+//        shooter.telemetry();
+//        telemetry.update();
     }
 
     /*
