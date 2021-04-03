@@ -79,7 +79,7 @@ public class masterRobot extends OpMode {
     boolean isIntakeOn = false;
     boolean intakeState = false;
     boolean lastIsUpToSpeed = false;
-    boolean justShot = true;
+    boolean justShot = false;
     transitionShooterMode transitionState = transitionShooterMode.Advancing;
 
     boolean slowMode = false;
@@ -87,8 +87,8 @@ public class masterRobot extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
     private ElapsedTime pauseTransitionTime = new ElapsedTime();
-
-
+    private ElapsedTime loopTimer = new ElapsedTime();
+    private int lastTime = 0;
     @Override
     public void init() {
         intake = new RingIntake(telemetry, hardwareMap);
@@ -107,7 +107,7 @@ public class masterRobot extends OpMode {
 //        webCam = new WebCam(telemetry, hardwareMap);
 //        webCam.init();
 
-        telemetry.addData("ver", "1.36");
+        telemetry.addData("ver", "1.37");
     }
 
     /*
@@ -220,10 +220,10 @@ public class masterRobot extends OpMode {
 
         ///////////shooter
 
-//        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
-//            justShot = true;
-//        }
-//        lastIsUpToSpeed = shooter.isUpToSpeed();
+        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
+            justShot = true;
+        }
+        lastIsUpToSpeed = shooter.isUpToSpeed();
 
         if (controls.autoShootToggle()) {
             autoShoot();
