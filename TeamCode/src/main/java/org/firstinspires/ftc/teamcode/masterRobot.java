@@ -220,10 +220,10 @@ public class masterRobot extends OpMode {
 
         ///////////shooter
 
-        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
-            justShot = true;
-        }
-        lastIsUpToSpeed = shooter.isUpToSpeed();
+//        if (!shooter.isUpToSpeed() && lastIsUpToSpeed) {
+//            justShot = true;
+//        }
+//        lastIsUpToSpeed = shooter.isUpToSpeed();
 
         if (controls.autoShootToggle()) {
             autoShoot();
