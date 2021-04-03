@@ -263,6 +263,7 @@ public class masterRobot extends OpMode {
         shooter.telemetry();
         telemetry.addData("just shot", justShot);
         telemetry.addData("shoot state", transitionState.toString());
+        telemetry.addData("is up to speed", shooter.isUpToSpeed());
         telemetry.update();
     }
 

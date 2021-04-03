@@ -55,7 +55,7 @@ public class Shooter {
                 return false;
             }
         } else {
-            if (shooterMotor.getVelocity() < targetShootSpeed - 1200) {
+            if (shooterMotor.getVelocity() < targetShootSpeed - 200) {
                 stablizationMode = true;
             }
             return true;
