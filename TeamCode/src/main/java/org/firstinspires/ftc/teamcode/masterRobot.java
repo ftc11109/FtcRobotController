@@ -107,7 +107,7 @@ public class masterRobot extends OpMode {
 //        webCam = new WebCam(telemetry, hardwareMap);
 //        webCam.init();
 
-        telemetry.addData("ver", "1.35");
+        telemetry.addData("ver", "1.36");
     }
 
     /*
