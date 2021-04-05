@@ -8,9 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Drive {
 
-    public static final double SLOW_MULTIPLIER = 0.35;
-    public static final double STRAFE_SLOW_MULTIPLIER = 0.5;
-    public static final double FAST_SLOW_MULTIPLIER = 0.75;
+    public static final double SLOW_MULTIPLIER = 0.425;
+    public static final double STRAFE_SLOW_MULTIPLIER = 0.65;
+    public static final double FAST_SLOW_MULTIPLIER = 0.6;
+
     public Drive(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -93,11 +94,16 @@ public class Drive {
             rightBP /= max;
         }
 
+        if (yIn < 0.65) {
+            rightDriveFront.setPower((rightFP * FAST_SLOW_MULTIPLIER)*1.2);
+            leftDriveFront.setPower((leftFP * FAST_SLOW_MULTIPLIER)*1.2);
+        } else {
+            rightDriveFront.setPower(rightFP * FAST_SLOW_MULTIPLIER);
+            leftDriveFront.setPower(leftFP * FAST_SLOW_MULTIPLIER);
+        }
+            leftDriveBack.setPower(leftBP * FAST_SLOW_MULTIPLIER);
+            rightDriveBack.setPower(rightBP * FAST_SLOW_MULTIPLIER);
 
-        leftDriveFront.setPower(leftFP*FAST_SLOW_MULTIPLIER);
-        leftDriveBack.setPower(leftBP*FAST_SLOW_MULTIPLIER);
-        rightDriveFront.setPower(rightFP*FAST_SLOW_MULTIPLIER);
-        rightDriveBack.setPower(rightBP*FAST_SLOW_MULTIPLIER);
     }
 
     public void drive(double x, double y, double rx, boolean slowMode, double gyroAngle) {
@@ -108,4 +114,11 @@ public class Drive {
         }
     }
 
+    public double getRightTick() {
+        return rightDriveFront.getCurrentPosition();
+    }
+
+    public double getLeftTicks() {
+        return leftDriveFront.getCurrentPosition();
+    }
 }

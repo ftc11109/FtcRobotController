@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomouseMovement.ImuPIDTurning;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.subsystem.IMU;
 import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
@@ -68,7 +69,8 @@ public class masterRobot extends OpMode {
     RingSensors disSensors;
     RobotControls controls;
     Shooter shooter;
-    IMU imu;
+//    IMU imu;
+    ImuPIDTurning Imu;
 //    WebCam webCam;
 
 
@@ -83,6 +85,8 @@ public class masterRobot extends OpMode {
     transitionShooterMode transitionState = transitionShooterMode.Advancing;
 
     boolean slowMode = false;
+
+    double startHeading;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
@@ -102,8 +106,11 @@ public class masterRobot extends OpMode {
         controls = new RobotControls(gamepad1, gamepad2);
         shooter = new Shooter(telemetry, hardwareMap);
         shooter.init();
-        imu = new IMU(telemetry, hardwareMap);
-        imu.init();
+        Imu = new ImuPIDTurning(telemetry, hardwareMap);
+        Imu.init();
+
+        //        imu = new IMU(telemetry, hardwareMap);
+//        imu.init();
 //        webCam = new WebCam(telemetry, hardwareMap);
 //        webCam.init();
 
@@ -122,6 +129,7 @@ public class masterRobot extends OpMode {
      */
     @Override
     public void start() {
+        Imu.setStartAngle();
         runtime.reset();
     }
 
@@ -159,7 +167,7 @@ public class masterRobot extends OpMode {
                 }
             }
             if (transitionState == transitionShooterMode.Pause) {
-                if (pauseTransitionTime.milliseconds() > 250) {
+                if (pauseTransitionTime.milliseconds() > 1500) {
                     transitionState = transitionShooterMode.Ready;
                 } else {
                     transtition.doNothingMode();
@@ -200,7 +208,7 @@ public class masterRobot extends OpMode {
             transtition.reverseIntakeTransitionMode();
         }
         if (controls.polycordIntake()) {
-            transtition.intakeTransitionMode();
+            transtition.shootingTransitionMode();
         }
 
         transtition.runMotors();
@@ -242,7 +250,8 @@ public class masterRobot extends OpMode {
         }
 
         if (controls.resetMinAndMax()) {
-            shooter.ResetMinMax();
+            Imu.rotate(10 - Imu.getAbsoluteAngle(), 0.3,2);
+            Imu.rotate(Imu.getStartAngle() - Imu.getAbsoluteAngle(), 0.3,2);
         }
 
         if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500) {
@@ -256,8 +265,8 @@ public class masterRobot extends OpMode {
 //        webCam.execute();
 
         /////////////telemetry
-        telemetry.addData("loop time", lastTime - loopTimer.milliseconds());
-        lastTime = loopTimer.milliseconds();
+//        telemetry.addData("loop time", loopTimer.milliseconds() - lastTime);
+//        lastTime = loopTimer.milliseconds();
 //        disSensors.telemetry();
 //        imu.telemetry();
 //        transtition.telemetery();

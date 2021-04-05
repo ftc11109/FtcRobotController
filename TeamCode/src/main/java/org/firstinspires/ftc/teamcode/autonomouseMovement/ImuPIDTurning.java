@@ -34,6 +34,7 @@ public class ImuPIDTurning {
     BNO055IMU imu;
     Orientation lastAngles = new Orientation();
     double globalAngle, power = .10, correction;
+    double startAngle;
 
     public ImuPIDTurning(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
@@ -77,6 +78,11 @@ public class ImuPIDTurning {
         globalAngle = 0;
     }
 
+    public double getAbsoluteAngle(){
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        return angles.firstAngle;
+    }
     /**
      * Get current cumulative angle rotation from last reset.
      *
@@ -109,6 +115,13 @@ public class ImuPIDTurning {
         return angles.firstAngle;
     }
 
+    public void setStartAngle(){
+        startAngle = getAngle();
+    }
+
+    public double getStartAngle(){
+        return startAngle;
+    }
     /**
      * See if we are moving in a straight line and if not return a power correction value.
      *
@@ -157,7 +170,7 @@ public class ImuPIDTurning {
      *
      * @param targetAngle Degrees to turn, + is left - is right
      */
-    public void rotate(int targetAngle, double power, double timeOutS) {
+    public void rotate(double targetAngle, double power, double timeOutS) {
         double leftPower, rightPower;
         double error;
         //LEFT IS - RIGHT is +
@@ -201,7 +214,7 @@ public class ImuPIDTurning {
             telemetry.addData("target", targetAngle);
             telemetry.addData("error", error);
             telemetry.update();
-            if (inRange(1, -1, getAngle(), targetAngle)) {
+            if (inRange(0.5, -0.5, getAngle(), targetAngle)) {
                 leftmotorB.setPower(0);
                 rightmotorB.setPower(0);
                 leftmotorF.setPower(0);
@@ -216,7 +229,7 @@ public class ImuPIDTurning {
      *
      * @param degrees Degrees to turn, + is left - is right
      */
-    public void rotateToHeading(int degrees, double power, double timeOutS) {
+    public void rotateToHeading(double degrees, double power, double timeOutS) {
         double leftPower, rightPower;
         //LEFT IS - RIGHT is +
         // restart imu movement tracking.
