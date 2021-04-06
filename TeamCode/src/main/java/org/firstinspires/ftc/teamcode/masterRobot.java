@@ -211,7 +211,7 @@ public class masterRobot extends OpMode {
         if (controls.spitOut()) {
             transtition.reverseIntakeTransitionMode();
         }
-        if (controls.polycordIntake()) {
+        if (controls.shootToggle() || controls.polycordIntake()) {
             transtition.shootingTransitionMode();
         }
 

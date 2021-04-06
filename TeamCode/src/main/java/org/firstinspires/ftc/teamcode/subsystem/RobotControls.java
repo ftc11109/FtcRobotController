@@ -39,11 +39,12 @@ public class RobotControls {
     }
 
     public boolean shootToggle() {
-        if (gamepad1.right_trigger > 0.5 && !shootLastTrigger){
-            shootState = !shootState;
-        }
-        shootLastTrigger = gamepad1.right_trigger > 0.5;
-        return shootState;
+//        if (gamepad1.right_trigger > 0.5 && !shootLastTrigger){
+//            shootState = !shootState;
+//        }
+//        shootLastTrigger = gamepad1.right_trigger > 0.5;
+//        return shootState;
+        return gamepad1.right_trigger > 0.5;
     }
 
     public boolean polycordIntake() {
