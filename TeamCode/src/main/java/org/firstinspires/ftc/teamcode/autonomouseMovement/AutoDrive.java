@@ -68,12 +68,12 @@ public class AutoDrive {
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
     private ElapsedTime runtime = new ElapsedTime();
-
+    private ElapsedTime strafeTime = new ElapsedTime();
     DcMotor leftDrive;
     DcMotor rightDrive;
 
     static final double COUNTS_PER_MOTOR_REV = 420; //8.5714;
-    static final double WHEEL_DIAMETER_INCHES = 3.54331*79/63;
+    static final double WHEEL_DIAMETER_INCHES = 3.54331 * 79 / 63;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.14159);
 
     private boolean isDriving = false;
@@ -94,6 +94,12 @@ public class AutoDrive {
         return isDriving;
     }
 
+    public void timeStrafe(double speed, double timeout) {
+        strafeTime.reset();
+        while (strafeTime.seconds() < timeout) {
+            drive.drive( speed, 0, 0, false, 0);
+        }
+    }
 
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeOutS) {
         double leftTargetTicks = leftInches * COUNTS_PER_INCH;
@@ -101,17 +107,17 @@ public class AutoDrive {
         double startOffset = drive.getLeftTicks();
 
         runtime.reset();
-        while (runtime.seconds()<timeOutS) {
+        while (runtime.seconds() < timeOutS) {
             double offsetGetLeftTicks = drive.getLeftTicks() - startOffset;
 
 
             if (Math.abs(offsetGetLeftTicks) < Math.abs(leftTargetTicks)) {
-                drive.drive(0.0, Math.abs(speed) * -Math.signum(leftInches), 0.0,false,0);
-                telemetry.addData("voltage",        0  );
+                drive.drive(0.0, Math.abs(speed) * -Math.signum(leftInches), 0.0, false, 0);
+                telemetry.addData("voltage", 0);
                 telemetry.addData("dis", "%.1f, %.1f", leftTargetTicks, offsetGetLeftTicks);
                 telemetry.update();
             } else {
-                drive.drive(0.0, 0.0, 0.0,false,0);
+                drive.drive(0.0, 0.0, 0.0, false, 0);
                 break;
             }
 

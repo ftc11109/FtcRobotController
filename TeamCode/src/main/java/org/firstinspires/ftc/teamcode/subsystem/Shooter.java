@@ -14,6 +14,7 @@ public class Shooter {
 
     //power shot speed 1000
     double targetShootSpeed = 1300.0;
+    double autoTargetShootSpeed = 1200.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
     WebCam webCam;
@@ -91,6 +92,17 @@ public class Shooter {
         minAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
         minSpeed = shooterMotor.getVelocity();
         maxAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
+    }
+    public void autoSetShootOn(boolean shooterOn) {
+        if (shooterOn) {
+            autoShooterSpinUp();
+        } else {
+            doNothing();
+        }
+    }
+
+    public void autoShooterSpinUp() {
+        shooterMotor.setVelocity(autoTargetShootSpeed);
     }
 
     public void loop() {
