@@ -64,7 +64,7 @@ public class masterRobot extends OpMode {
         Advancing, Pause, Ready, Shooting, clearing
     }
 
-    RingIntake intake;
+     RingIntake intake;
     Drive Drive;
     RingTranstition transtition;
     RingSensors disSensors;
@@ -93,6 +93,7 @@ public class masterRobot extends OpMode {
     private ElapsedTime controlTime = new ElapsedTime();
     private ElapsedTime pauseTransitionTime = new ElapsedTime();
     private ElapsedTime loopTimer = new ElapsedTime();
+    private ElapsedTime polyIntakeWait = new ElapsedTime();
     private double lastTime = 0;
     @Override
     public void init() {
@@ -205,8 +206,11 @@ public class masterRobot extends OpMode {
 
 
         if (disSensors.isRingInIntake() && !controls.shootToggle()) {
-            transtition.intakeTransitionMode();
-
+            if (polyIntakeWait.milliseconds() > 500){
+                transtition.intakeTransitionMode();
+            }
+        } else{
+            polyIntakeWait.reset();
         }
         if (disSensors.isRingInEle() && !controls.shootToggle()) {
             transtition.doNothingMode();
@@ -215,7 +219,7 @@ public class masterRobot extends OpMode {
         if (controls.spitOut()) {
             transtition.reverseIntakeTransitionMode();
         }
-        if (controls.polycordIntake()) {
+        if (controls.shootToggle() || controls.polycordIntake()) {
             transtition.shootingTransitionMode();
         }
 
