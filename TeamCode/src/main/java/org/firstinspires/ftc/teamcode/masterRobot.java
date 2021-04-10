@@ -41,6 +41,7 @@ import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
 import org.firstinspires.ftc.teamcode.subsystem.RobotControls;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -60,7 +61,7 @@ import org.firstinspires.ftc.teamcode.subsystem.Shooter;
 public class masterRobot extends OpMode {
     // Declare OpMode members.
     enum transitionShooterMode {
-        Advancing, Pause, Ready, Shooting
+        Advancing, Pause, Ready, Shooting, clearing
     }
 
     RingIntake intake;
@@ -71,7 +72,7 @@ public class masterRobot extends OpMode {
     Shooter shooter;
 //    IMU imu;
     ImuPIDTurning Imu;
-//    WebCam webCam;
+    WebCam webCam;
 
 
     boolean isShooterOn = false;
@@ -111,8 +112,8 @@ public class masterRobot extends OpMode {
 
         //        imu = new IMU(telemetry, hardwareMap);
 //        imu.init();
-//        webCam = new WebCam(telemetry, hardwareMap);
-//        webCam.init();
+        webCam = new WebCam(telemetry, hardwareMap);
+        webCam.init();
 
         telemetry.addData("ver", "1.38");
     }
@@ -184,10 +185,17 @@ public class masterRobot extends OpMode {
             }
             if (transitionState == transitionShooterMode.Shooting) {
                 if (justShot) {
-                    transitionState = transitionShooterMode.Advancing;
+                    transitionState = transitionShooterMode.clearing;
                     justShot = false;
                 } else {
                     transtition.shootingTransitionMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.clearing){
+                if (!disSensors.isRingInEle()){
+                    transitionState = transitionShooterMode.Advancing;
+                } else{
+                    transtition.upperTransitionOuttake();
                 }
             }
         } else {
@@ -216,7 +224,10 @@ public class masterRobot extends OpMode {
         /////////////intake
 
         if (controls.intakeToggle() && !intakeState) {
-            isIntakeOn = !isIntakeOn;
+            if (controlTime.milliseconds() > 500){
+                isIntakeOn = !isIntakeOn;
+                controlTime.reset();
+            }
         }
         intakeState = controls.shooterSpinUp();
         intake.setIntakeOn(isIntakeOn);
@@ -262,12 +273,12 @@ public class masterRobot extends OpMode {
         shooter.loop();
 
         /////////////webcam
-//        webCam.execute();
+        webCam.execute();
 
         /////////////telemetry
 //        telemetry.addData("loop time", loopTimer.milliseconds() - lastTime);
 //        lastTime = loopTimer.milliseconds();
-//        disSensors.telemetry();
+        disSensors.telemetry();
 //        imu.telemetry();
 //        transtition.telemetery();
 //        intake.telemetry();
