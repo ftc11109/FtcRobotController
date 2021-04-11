@@ -329,4 +329,9 @@ public class WebCam {
             }
 
         }
-    }
+
+        public double camHeading(){
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+        return rotation.thirdAngle;
+        }
+}

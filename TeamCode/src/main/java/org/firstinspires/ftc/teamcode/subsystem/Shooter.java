@@ -56,7 +56,7 @@ public class Shooter {
                 return false;
             }
         } else {
-            if (shooterMotor.getVelocity() < targetShootSpeed - 200) {
+            if (shooterMotor.getVelocity() < targetShootSpeed - 75) {
                 stablizationMode = true;
             }
             return true;
@@ -123,5 +123,6 @@ public class Shooter {
         telemetry.addData("min shooter amps", minAmps);
         telemetry.addData("min shooter speed", minSpeed);
         telemetry.addData("max shooter amps", maxAmps);
+        telemetry.addData("is stableizaion", stablizationMode);
     }
 }

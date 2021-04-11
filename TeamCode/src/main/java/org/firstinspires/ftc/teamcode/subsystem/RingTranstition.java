@@ -60,8 +60,8 @@ public class RingTranstition {
     private static final double INTAKE_UPPER_BELTS_SPEED = -1000.0;
     private static final double LOWER_BELT_INTAKE_SPEED = 1000.0;
 
-    private static final double ADVANCING_UPPER_BELTS_SPEED = -1250.0*0.25;
-    private static final double LOWER_BELT_ADVANCING_SPEED = 750.0*0.25;
+    private static final double ADVANCING_UPPER_BELTS_SPEED = (-1250.0*0.25)*1.33;
+    private static final double LOWER_BELT_ADVANCING_SPEED = (750.0*0.25)*1.33;
 
     private double lowerMotorSpeed;
     private double upperMotorSpeed;

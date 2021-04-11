@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomouseMovement.ImuPIDTurning;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.subsystem.IMU;
@@ -64,13 +65,13 @@ public class masterRobot extends OpMode {
         Advancing, Pause, Ready, Shooting, clearing
     }
 
-     RingIntake intake;
+    RingIntake intake;
     Drive Drive;
     RingTranstition transtition;
     RingSensors disSensors;
     RobotControls controls;
     Shooter shooter;
-//    IMU imu;
+    //    IMU imu;
     ImuPIDTurning Imu;
     WebCam webCam;
 
@@ -95,6 +96,7 @@ public class masterRobot extends OpMode {
     private ElapsedTime loopTimer = new ElapsedTime();
     private ElapsedTime polyIntakeWait = new ElapsedTime();
     private double lastTime = 0;
+
     @Override
     public void init() {
         intake = new RingIntake(telemetry, hardwareMap);
@@ -116,7 +118,7 @@ public class masterRobot extends OpMode {
         webCam = new WebCam(telemetry, hardwareMap);
         webCam.init();
 
-        telemetry.addData("ver", "1.38");
+        telemetry.addData("ver", "1.39");
     }
 
     /*
@@ -192,10 +194,10 @@ public class masterRobot extends OpMode {
                     transtition.shootingTransitionMode();
                 }
             }
-            if (transitionState == transitionShooterMode.clearing){
-                if (!disSensors.isRingInEle()){
+            if (transitionState == transitionShooterMode.clearing) {
+                if (!disSensors.isRingInEle()) {
                     transitionState = transitionShooterMode.Advancing;
-                } else{
+                } else {
                     transtition.upperTransitionOuttake();
                 }
             }
@@ -204,12 +206,11 @@ public class masterRobot extends OpMode {
         }
 
 
-
         if (disSensors.isRingInIntake() && !controls.shootToggle()) {
-            if (polyIntakeWait.milliseconds() > 500){
+            if (polyIntakeWait.milliseconds() > 500) {
                 transtition.intakeTransitionMode();
             }
-        } else{
+        } else {
             polyIntakeWait.reset();
         }
         if (disSensors.isRingInEle() && !controls.shootToggle()) {
@@ -219,7 +220,7 @@ public class masterRobot extends OpMode {
         if (controls.spitOut()) {
             transtition.reverseIntakeTransitionMode();
         }
-        if (controls.shootToggle() || controls.polycordIntake()) {
+        if (controls.polycordIntake()) {
             transtition.shootingTransitionMode();
         }
 
@@ -228,7 +229,7 @@ public class masterRobot extends OpMode {
         /////////////intake
 
         if (controls.intakeToggle() && !intakeState) {
-            if (controlTime.milliseconds() > 500){
+            if (controlTime.milliseconds() > 500) {
                 isIntakeOn = !isIntakeOn;
                 controlTime.reset();
             }
@@ -265,8 +266,8 @@ public class masterRobot extends OpMode {
         }
 
         if (controls.resetMinAndMax()) {
-            Imu.rotate(10 - Imu.getAbsoluteAngle(), 0.3,2);
-            Imu.rotate(Imu.getStartAngle() - Imu.getAbsoluteAngle(), 0.3,2);
+//            shooter.ResetMinMax();
+            Imu.rotate( 90 - webCam.camHeading(), 0.4, 2);
         }
 
         if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500) {
@@ -282,12 +283,17 @@ public class masterRobot extends OpMode {
         /////////////telemetry
 //        telemetry.addData("loop time", loopTimer.milliseconds() - lastTime);
 //        lastTime = loopTimer.milliseconds();
-        disSensors.telemetry();
+//        disSensors.telemetry();
 //        imu.telemetry();
 //        transtition.telemetery();
 //        intake.telemetry();
-//        shooter.telemetry();
-//        telemetry.update();
+        shooter.telemetry();
+        telemetry.addData("trans state", transitionState);
+        telemetry.addData("just shot", justShot);
+        telemetry.addData("is up to speed", shooter.isUpToSpeed());
+        telemetry.addData("last is up", lastIsUpToSpeed);
+        telemetry.update();
+
     }
 
     /*
