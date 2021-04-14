@@ -33,10 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.autonomouseMovement.ImuPIDTurning;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
-import org.firstinspires.ftc.teamcode.subsystem.IMU;
 import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
 import org.firstinspires.ftc.teamcode.subsystem.RingSensors;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
@@ -62,7 +60,7 @@ import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 public class masterRobot extends OpMode {
     // Declare OpMode members.
     enum transitionShooterMode {
-        Advancing, Pause, Ready, Shooting, clearing
+        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack
     }
 
     RingIntake intake;
@@ -166,6 +164,8 @@ public class masterRobot extends OpMode {
             if (transitionState == transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle()) {
                     transitionState = transitionShooterMode.Pause;
+                } else if (disSensors.isRingInForward()){
+                    transitionState = transitionShooterMode.ClearingFront;
                 } else {
                     transtition.advancingTransitionMode();
                 }
@@ -187,15 +187,25 @@ public class masterRobot extends OpMode {
                 }
             }
             if (transitionState == transitionShooterMode.Shooting) {
-                if (justShot) {
-                    transitionState = transitionShooterMode.clearing;
-                    justShot = false;
+                if (!shooter.isUpToSpeed()) {
+                    if (disSensors.isRingInForward()){
+                        transitionState = transitionShooterMode.ClearingFront;
+                    } else {
+                        transitionState = transitionShooterMode.ClearingBack;
+                    }
                 } else {
                     transtition.shootingTransitionMode();
                 }
             }
-            if (transitionState == transitionShooterMode.clearing) {
-                if (!disSensors.isRingInEle()) {
+            if (transitionState == transitionShooterMode.ClearingFront) {
+                if (disSensors.isRingInEle()) {
+                    transitionState = transitionShooterMode.ClearingBack;
+                } else {
+                    transtition.upperTransitionOuttake();
+                }
+            }
+            if (transitionState == transitionShooterMode.ClearingBack){
+                if (!disSensors.isRingInEle()){
                     transitionState = transitionShooterMode.Advancing;
                 } else {
                     transtition.upperTransitionOuttake();
@@ -283,15 +293,15 @@ public class masterRobot extends OpMode {
         /////////////telemetry
 //        telemetry.addData("loop time", loopTimer.milliseconds() - lastTime);
 //        lastTime = loopTimer.milliseconds();
-//        disSensors.telemetry();
+        disSensors.telemetry();
 //        imu.telemetry();
 //        transtition.telemetery();
 //        intake.telemetry();
-        shooter.telemetry();
-        telemetry.addData("trans state", transitionState);
-        telemetry.addData("just shot", justShot);
-        telemetry.addData("is up to speed", shooter.isUpToSpeed());
-        telemetry.addData("last is up", lastIsUpToSpeed);
+//        shooter.telemetry();
+//        telemetry.addData("trans state", transitionState);
+//        telemetry.addData("just shot", justShot);
+//        telemetry.addData("is up to speed", shooter.isUpToSpeed());
+//        telemetry.addData("last is up", lastIsUpToSpeed);
         telemetry.update();
 
     }

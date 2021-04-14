@@ -54,7 +54,7 @@ public class RingTranstition {
     private static final double REVERSE_UPPER_BELTS_SPEED = 1000.0;
     public static final double LOWER_BELTS_SPIT_OUT_SPEED = -1000.0;
 
-    private static final double SHOOTING_UPPER_BELTS_SPEED = -1250.0;
+    private static final double SHOOTING_UPPER_BELTS_SPEED = -1250.0*4/3;
     private static final double SHOOTING_LOWER_BELTS_SPEED = 1000.0;
 
     private static final double INTAKE_UPPER_BELTS_SPEED = -1000.0;

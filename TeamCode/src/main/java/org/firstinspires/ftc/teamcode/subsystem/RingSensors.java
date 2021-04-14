@@ -52,18 +52,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 public class RingSensors {
 
-    private static final double RING_WAIT = 650;
+    private static final double RING_WAIT = 800;
 
     public RingSensors(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
     }
 
+    boolean isRingIn = false;
+
     private Telemetry telemetry;
     private HardwareMap hardwareMap;
-    private DistanceSensor intakeSensor0;
-    private DistanceSensor intakeSensor1;
-    private DistanceSensor intakeSensor2;
+    private DistanceSensor intakeSensor;
+    private DistanceSensor forwardShooterSensor;
 
     private DistanceSensor elevatorSensor;
 
@@ -72,25 +73,25 @@ public class RingSensors {
 
     public void init() {
         // you can use this as a regular DistanceSensor.
-        intakeSensor0 = hardwareMap.get(DistanceSensor.class, "int1");
-        intakeSensor1 = hardwareMap.get(DistanceSensor.class, "int2");
-        intakeSensor2 = hardwareMap.get(DistanceSensor.class, "int3");
+        intakeSensor = hardwareMap.get(DistanceSensor.class, "int2");
+        forwardShooterSensor = hardwareMap.get(DistanceSensor.class, "forward_shooter_sensor");
         elevatorSensor = hardwareMap.get(DistanceSensor.class, "eleSensor");
     }
 
-    public double getIntake0Distance() {
-        return intakeSensor0.getDistance(DistanceUnit.MM);
+    public double getIntakeDistance() {
+        return intakeSensor.getDistance(DistanceUnit.MM);
     }
-    public double getIntake1Distance() {
-        return intakeSensor1.getDistance(DistanceUnit.MM);
+
+    public double getForwardSensorDistance() {
+        return forwardShooterSensor.getDistance(DistanceUnit.MM);
     }
-    public double getIntake2Distance() {
-        return intakeSensor2.getDistance(DistanceUnit.MM);
+
+    public double getEleDistance() {
+        return elevatorSensor.getDistance(DistanceUnit.MM);
     }
-    public double getEle2Distance(){ return elevatorSensor.getDistance(DistanceUnit.MM);}
 
     public boolean isRingInIntake() {
-        if ((intakeSensor0.getDistance(DistanceUnit.MM) < 60 || intakeSensor1.getDistance(DistanceUnit.MM) < 60 || intakeSensor2.getDistance(DistanceUnit.MM) < 60)) {
+        if (intakeSensor.getDistance(DistanceUnit.MM) < 70) {
             ringTimer.reset();
             return true;
         } else if (ringTimer.milliseconds() > RING_WAIT) {
@@ -100,7 +101,7 @@ public class RingSensors {
         }
     }
 
-    public boolean isRingInEle(){
+    public boolean isRingInEle() {
 //    if (getEle2Distance() < 30){
 //        if (eleTimer.milliseconds() > 500){
 //            return true;
@@ -111,17 +112,19 @@ public class RingSensors {
 //        eleTimer.reset();
 //        return false;
 //    }
-    return getEle2Distance() < 45;
+        return getEleDistance() < 45;
     }
 
+    public boolean isRingInForward(){
+        return getForwardSensorDistance() < 54;
+    }
     public void telemetry() {
 
 
         // generic DistanceSensor methods.
-        telemetry.addData("range0", getIntake0Distance());
-        telemetry.addData("range1", getIntake1Distance());
-        telemetry.addData("range2", getIntake2Distance());
-        telemetry.addData("elevator Range", getEle2Distance());
+        telemetry.addData("intake range", getIntakeDistance());
+        telemetry.addData("forward range", getForwardSensorDistance());
+        telemetry.addData("elevator Range", getEleDistance());
 
         telemetry.addData("isRingInEle", isRingInEle());
         telemetry.addData("isRing?", isRingInIntake());

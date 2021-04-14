@@ -17,12 +17,15 @@ import org.firstinspires.ftc.teamcode.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.autonomouseMovement.ImuPIDTurning;
 import org.firstinspires.ftc.teamcode.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.subsystem.RingTranstition;
+import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 
 @Autonomous(name = "Auto Shoot", group = "Exercises")
 public class TestAutoShoot extends LinearOpMode {
     private static final double TURN_SPEED = 0.5;
     private ElapsedTime timer;
 
+    double webCamHeading;
+    WebCam webCam;
     Shooter shooter;
     ImuPIDTurning IMU;
     AutoDrive autoDrive;
@@ -32,6 +35,8 @@ public class TestAutoShoot extends LinearOpMode {
     // called when init button is  pressed.
     @Override
     public void runOpMode() throws InterruptedException {
+        webCam = new WebCam(telemetry,hardwareMap);
+        webCam.init();
         IMU = new ImuPIDTurning(telemetry, hardwareMap);
         IMU.init();
         drive = new Drive(telemetry, hardwareMap);
@@ -77,6 +82,12 @@ public class TestAutoShoot extends LinearOpMode {
 //                ringTransition.runMotors();
 //            }
 //        }
+//        timer.reset();
+//        while (timer.milliseconds()> 2000){
+//            webCam.execute();
+//            webCamHeading = webCam.camHeading();
+//        }
+//        IMU.rotate(webCamHeading-90,0.4,2);
 
         while (!shooter.isUpToSpeed()){
             shooter.autoSetShootOn(true);
