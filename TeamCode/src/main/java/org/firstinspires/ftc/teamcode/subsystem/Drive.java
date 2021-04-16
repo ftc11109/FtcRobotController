@@ -10,7 +10,7 @@ public class Drive {
 
     public static final double SLOW_MULTIPLIER = 0.425;
     public static final double STRAFE_SLOW_MULTIPLIER = 0.65;
-    public static final double FAST_SLOW_MULTIPLIER = 0.6;
+    public static final double FAST_SLOW_MULTIPLIER = 0.67;
 
     public Drive(Telemetry telemetry, HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;

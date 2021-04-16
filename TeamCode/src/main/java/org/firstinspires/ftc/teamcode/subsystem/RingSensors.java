@@ -91,7 +91,7 @@ public class RingSensors {
     }
 
     public boolean isRingInIntake() {
-        if (intakeSensor.getDistance(DistanceUnit.MM) < 70) {
+        if (intakeSensor.getDistance(DistanceUnit.MM) < 85) {
             ringTimer.reset();
             return true;
         } else if (ringTimer.milliseconds() > RING_WAIT) {
