@@ -13,8 +13,8 @@ public class Shooter {
     private static final double P_RATE = 0.07;
 
     //power shot speed 1000
-    double targetShootSpeed = 1250.0;
-    double autoTargetShootSpeed = 1250.0;
+    double targetShootSpeed = 1500.0;
+    double autoTargetShootSpeed = 1500.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
     WebCam webCam;
@@ -29,6 +29,7 @@ public class Shooter {
     private double minSpeed;
     private double minAmps;
     private double maxAmps;
+    private double maxSpeed;
     private ElapsedTime rangeTime = new ElapsedTime();
 
     boolean stablizationMode = true;
@@ -92,6 +93,7 @@ public class Shooter {
         minAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
         minSpeed = shooterMotor.getVelocity();
         maxAmps = shooterMotor.getCurrent(CurrentUnit.AMPS);
+        maxSpeed = shooterMotor.getVelocity();
     }
     public void autoSetShootOn(boolean shooterOn) {
         if (shooterOn) {
@@ -109,6 +111,7 @@ public class Shooter {
         minAmps = Math.min(minAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
         minSpeed = Math.min(minSpeed, shooterMotor.getVelocity());
         maxAmps = Math.max(maxAmps, shooterMotor.getCurrent(CurrentUnit.AMPS));
+        maxSpeed = Math.max(maxSpeed, shooterMotor.getVelocity());
         isUpToSpeed();
     }
 
@@ -123,6 +126,7 @@ public class Shooter {
         telemetry.addData("min shooter amps", minAmps);
         telemetry.addData("min shooter speed", minSpeed);
         telemetry.addData("max shooter amps", maxAmps);
+        telemetry.addData("max shooter speed", maxSpeed);
         telemetry.addData("is stableizaion", stablizationMode);
     }
 }

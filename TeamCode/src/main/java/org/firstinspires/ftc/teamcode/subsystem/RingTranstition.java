@@ -54,14 +54,14 @@ public class RingTranstition {
     private static final double REVERSE_UPPER_BELTS_SPEED = 1000.0;
     public static final double LOWER_BELTS_SPIT_OUT_SPEED = -1000.0;
 
-    private static final double SHOOTING_UPPER_BELTS_SPEED = -1250.0*4/3;
-    private static final double SHOOTING_LOWER_BELTS_SPEED = 1000.0;
+    private static final double SHOOTING_UPPER_BELTS_SPEED = -1400;
+    private static final double SHOOTING_LOWER_BELTS_SPEED = 500.0;
 
     private static final double INTAKE_UPPER_BELTS_SPEED = -1000.0;
     private static final double LOWER_BELT_INTAKE_SPEED = 1000.0;
 
-    private static final double ADVANCING_UPPER_BELTS_SPEED = (-1250.0*0.25)*1.33;
-    private static final double LOWER_BELT_ADVANCING_SPEED = (750.0*0.25)*1.33;
+    private static final double ADVANCING_UPPER_BELTS_SPEED = -800;
+    private static final double LOWER_BELT_ADVANCING_SPEED = 585;
 
     private double lowerMotorSpeed;
     private double upperMotorSpeed;
@@ -109,6 +109,9 @@ public class RingTranstition {
         runUpperMotor(SHOOTING_UPPER_BELTS_SPEED);
     }
 
+    public void lowerDoNothing(){
+        runLowerMotor(0);
+    }
 
     public void doNothingMode() {
         runLowerMotor(0);

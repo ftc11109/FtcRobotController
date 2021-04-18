@@ -93,6 +93,7 @@ public class masterRobot extends OpMode {
     private ElapsedTime pauseTransitionTime = new ElapsedTime();
     private ElapsedTime loopTimer = new ElapsedTime();
     private ElapsedTime polyIntakeWait = new ElapsedTime();
+    private ElapsedTime timeOut = new ElapsedTime();
     private double lastTime = 0;
 
     @Override
@@ -116,7 +117,7 @@ public class masterRobot extends OpMode {
         webCam = new WebCam(telemetry, hardwareMap);
         webCam.init();
 
-        telemetry.addData("ver", "1.39");
+        telemetry.addData("ver", "1.391");
     }
 
     /*
@@ -164,15 +165,18 @@ public class masterRobot extends OpMode {
             if (transitionState == transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle()) {
                     transitionState = transitionShooterMode.Pause;
+                    timeOut.reset();
                 } else if (disSensors.isRingInForward()){
                     transitionState = transitionShooterMode.ClearingFront;
+                    timeOut.reset();
                 } else {
                     transtition.advancingTransitionMode();
                 }
             }
             if (transitionState == transitionShooterMode.Pause) {
-                if (pauseTransitionTime.milliseconds() > 1500) {
+                if (pauseTransitionTime.milliseconds() > 500) {
                     transitionState = transitionShooterMode.Ready;
+                    timeOut.reset();
                 } else {
                     transtition.doNothingMode();
                 }
@@ -182,12 +186,15 @@ public class masterRobot extends OpMode {
             if (transitionState == transitionShooterMode.Ready) {
                 if (shooter.isUpToSpeed() && controls.shootToggle()) {
                     transitionState = transitionShooterMode.Shooting;
+                    shooter.ResetMinMax();
+                    timeOut.reset();
                 } else {
                     transtition.doNothingMode();
                 }
             }
             if (transitionState == transitionShooterMode.Shooting) {
                 if (!shooter.isUpToSpeed()) {
+                    timeOut.reset();
                     if (disSensors.isRingInForward()){
                         transitionState = transitionShooterMode.ClearingFront;
                     } else {
@@ -198,21 +205,26 @@ public class masterRobot extends OpMode {
                 }
             }
             if (transitionState == transitionShooterMode.ClearingFront) {
-                if (disSensors.isRingInEle()) {
+                if (disSensors.isRingInEle()|| timeOut.milliseconds() > 2000) {
                     transitionState = transitionShooterMode.ClearingBack;
+                    timeOut.reset();
                 } else {
                     transtition.upperTransitionOuttake();
+                    transtition.lowerDoNothing();
                 }
             }
             if (transitionState == transitionShooterMode.ClearingBack){
-                if (!disSensors.isRingInEle()){
+                if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000){
                     transitionState = transitionShooterMode.Advancing;
+                    timeOut.reset();
                 } else {
                     transtition.upperTransitionOuttake();
+                    transtition.lowerDoNothing();
                 }
             }
         } else {
             transitionState = transitionShooterMode.Advancing;
+            timeOut.reset();
         }
 
 
@@ -276,8 +288,8 @@ public class masterRobot extends OpMode {
         }
 
         if (controls.resetMinAndMax()) {
-//            shooter.ResetMinMax();
-            Imu.rotate( 90 - webCam.camHeading(), 0.4, 2);
+            shooter.ResetMinMax();
+//            Imu.rotate( 90 - webCam.camHeading(), 0.4, 2);
         }
 
         if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500) {
