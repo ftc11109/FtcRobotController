@@ -11,6 +11,9 @@ public class RobotControls {
     boolean shootState = false;
     boolean shootLastTrigger = false;
 
+    boolean spinUpState = false;
+    boolean spinUpStateLast = false;
+
     boolean lastY = false;
 
     public RobotControls(Gamepad gamepad1, Gamepad gamepad2) {
@@ -47,11 +50,11 @@ public class RobotControls {
     }
 
     public boolean polycordIntake() {
-        return gamepad1.dpad_up;
+        return gamepad2.dpad_up;
     }
 
     public boolean spitOut() {
-        return gamepad1.dpad_down;
+        return gamepad2.dpad_down;
     }
 
     public boolean shooterSpinUp() {
@@ -59,6 +62,10 @@ public class RobotControls {
             shootState = false;
         }
         return gamepad1.left_trigger > 0.5;
+    }
+
+    public boolean shooterSpinUp2(){
+        return gamepad2.left_trigger > 0.5;
     }
 
     public boolean slowMode() {

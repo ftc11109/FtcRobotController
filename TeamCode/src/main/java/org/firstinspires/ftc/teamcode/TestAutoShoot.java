@@ -77,7 +77,7 @@ public class TestAutoShoot extends LinearOpMode {
 //        while () {
 //        }
 
-        autoDrive.encoderDrive(0.5, 48, 48, 10);
+        autoDrive.encoderDrive(0.5, 46.5, 46.5, 10);
         sleep(1000);
 //        if (startHeading - IMU.getAngle() < 1 && startHeading - IMU.getAngle() > -1)
 //        IMU.rotate(10, 0.3, 10);
