@@ -13,8 +13,8 @@ public class Shooter {
     private static final double P_RATE = 0.07;
 
     //power shot speed 1000
-    double targetShootSpeed = 1500.0;
-    double autoTargetShootSpeed = 1500.0;
+    double targetShootSpeed = 1425.0;
+    double autoTargetShootSpeed = 1000.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;
     WebCam webCam;
@@ -45,8 +45,8 @@ public class Shooter {
 
     public boolean isUpToSpeed() {
         if (stablizationMode) {
-            if (shooterMotor.getVelocity() > targetShootSpeed - 75 && shooterMotor.getVelocity() < targetShootSpeed + 75 ) {
-                if (rangeTime.milliseconds() > 250){
+            if (shooterMotor.getVelocity() > targetShootSpeed - 30 && shooterMotor.getVelocity() < targetShootSpeed + 30 ) {
+                if (rangeTime.milliseconds() > 500){
                     stablizationMode = false;
                     return true;
                 } else{

@@ -161,71 +161,72 @@ public class masterRobot extends OpMode {
         // feeder states: Advancing, Pause, Ready
         //
 
-//        if (isShooterOn) {
-//            if (transitionState == transitionShooterMode.Advancing) {
-//                if (disSensors.isRingInEle()) {
-//                    transitionState = transitionShooterMode.Pause;
-//                    timeOut.reset();
-//                } else if (disSensors.isRingInForward()){
-//                    transitionState = transitionShooterMode.ClearingFront;
-//                    timeOut.reset();
-//                } else {
-//                    transtition.advancingTransitionMode();
-//                }
-//            }
-//            if (transitionState == transitionShooterMode.Pause) {
-//                if (pauseTransitionTime.milliseconds() > 500) {
-//                    transitionState = transitionShooterMode.Ready;
-//                    timeOut.reset();
-//                } else {
-//                    transtition.doNothingMode();
-//                }
-//            } else {
-//                pauseTransitionTime.reset();
-//            }
-//            if (transitionState == transitionShooterMode.Ready) {
-//                if (shooter.isUpToSpeed() && controls.shootToggle()) {
-//                    transitionState = transitionShooterMode.Shooting;
-//                    shooter.ResetMinMax();
-//                    timeOut.reset();
-//                } else {
-//                    transtition.doNothingMode();
-//                }
-//            }
-//            if (transitionState == transitionShooterMode.Shooting) {
-//                if (!shooter.isUpToSpeed()) {
-//                    timeOut.reset();
-//                    if (disSensors.isRingInForward()){
-//                        transitionState = transitionShooterMode.ClearingFront;
-//                    } else {
-//                        transitionState = transitionShooterMode.ClearingBack;
-//                    }
-//                } else {
-//                    transtition.shootingTransitionMode();
-//                }
-//            }
-//            if (transitionState == transitionShooterMode.ClearingFront) {
-//                if (disSensors.isRingInEle()|| timeOut.milliseconds() > 2000) {
-//                    transitionState = transitionShooterMode.ClearingBack;
-//                    timeOut.reset();
-//                } else {
-//                    transtition.upperTransitionOuttake();
-//                    transtition.lowerDoNothing();
-//                }
-//            }
-//            if (transitionState == transitionShooterMode.ClearingBack){
-//                if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000){
-//                    transitionState = transitionShooterMode.Advancing;
-//                    timeOut.reset();
-//                } else {
-//                    transtition.upperTransitionOuttake();
-//                    transtition.lowerDoNothing();
-//                }
-//            }
-//        } else {
-//            transitionState = transitionShooterMode.Advancing;
-//            timeOut.reset();
-//        }
+        if (isShooterOn) {
+            if (transitionState == transitionShooterMode.Advancing) {
+                if (disSensors.isRingInEle()) {
+                    transitionState = transitionShooterMode.Pause;
+                    timeOut.reset();
+                } else if (disSensors.isRingInForward()){
+                    transitionState = transitionShooterMode.ClearingFront;
+                    timeOut.reset();
+                } else {
+                    transtition.advancingTransitionMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.Pause) {
+                if (pauseTransitionTime.milliseconds() > 500) {
+                    transitionState = transitionShooterMode.Ready;
+                    timeOut.reset();
+                } else {
+                    transtition.doNothingMode();
+                }
+            } else {
+                pauseTransitionTime.reset();
+            }
+            if (transitionState == transitionShooterMode.Ready) {
+                // TODO: controls.shootToggle()
+                if (shooter.isUpToSpeed() && true) {
+                    transitionState = transitionShooterMode.Shooting;
+                    shooter.ResetMinMax();
+                    timeOut.reset();
+                } else {
+                    transtition.doNothingMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.Shooting) {
+                if (!shooter.isUpToSpeed()) {
+                    timeOut.reset();
+                    if (disSensors.isRingInForward()){
+                        transitionState = transitionShooterMode.ClearingFront;
+                    } else {
+                        transitionState = transitionShooterMode.ClearingBack;
+                    }
+                } else {
+                    transtition.shootingTransitionMode();
+                }
+            }
+            if (transitionState == transitionShooterMode.ClearingFront) {
+                if (disSensors.isRingInEle()|| timeOut.milliseconds() > 2000) {
+                    transitionState = transitionShooterMode.ClearingBack;
+                    timeOut.reset();
+                } else {
+                    transtition.upperTransitionOuttake();
+                    transtition.lowerDoNothing();
+                }
+            }
+            if (transitionState == transitionShooterMode.ClearingBack){
+                if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000){
+                    transitionState = transitionShooterMode.Advancing;
+                    timeOut.reset();
+                } else {
+                    transtition.upperTransitionOuttake();
+                    transtition.lowerDoNothing();
+                }
+            }
+        } else {
+            transitionState = transitionShooterMode.Advancing;
+            timeOut.reset();
+        }
 
 
         if (disSensors.isRingInIntake() && !controls.shootToggle()) {
@@ -274,7 +275,7 @@ public class masterRobot extends OpMode {
 //        if (controls.autoShootToggle()) {
 //            autoShoot();
 //        }
-
+        // todo: yo remeber this
         if (controls.shooterSpinUp2() && !shooterSpinUpState && controlTime.milliseconds() > 250) {
             isShooterOn = !isShooterOn;
             shooter.setShootOn(isShooterOn);

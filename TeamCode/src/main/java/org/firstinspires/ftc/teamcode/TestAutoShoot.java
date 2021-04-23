@@ -26,6 +26,7 @@ public class TestAutoShoot extends LinearOpMode {
     private ElapsedTime timer;
     private ElapsedTime pauseTransitionTime;
     private ElapsedTime timeOut;
+    private ElapsedTime loopTimer;
     enum transitionShooterMode {
         Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack
     }
@@ -41,6 +42,7 @@ public class TestAutoShoot extends LinearOpMode {
     RingSensors disSensors;
     masterRobot.transitionShooterMode transitionState = masterRobot.transitionShooterMode.Advancing;
 
+    double lastLoop;
     // called when init button is  pressed.
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,6 +62,7 @@ public class TestAutoShoot extends LinearOpMode {
         timer = new ElapsedTime();
         pauseTransitionTime = new ElapsedTime();
         timeOut = new ElapsedTime();
+        loopTimer = new ElapsedTime();
 
         telemetry.addData("Mode", "waiting for start");
         telemetry.update();
@@ -71,14 +74,16 @@ public class TestAutoShoot extends LinearOpMode {
         telemetry.addData("Mode", "running");
         telemetry.addData("angle", IMU.getAngle());
         telemetry.update();
+        loopTimer.reset();
         double startHeading = IMU.getAngle() + -2;
-//        claw.SetPosition(Claw_Servo.CLOSED);
+
+        //        claw.SetPosition(Claw_Servo.CLOSED);
 //
 //        while () {
 //        }
 
-        autoDrive.encoderDrive(0.5, 46.5, 46.5, 10);
-        sleep(1000);
+//        autoDrive.encoderDrive(0.5, 46.5, 46.5, 10);
+//        sleep(1000);
 //        if (startHeading - IMU.getAngle() < 1 && startHeading - IMU.getAngle() > -1)
 //        IMU.rotate(10, 0.3, 10);
 //        IMU.rotate(startHeading - IMU.getAngle(), 0.3, 10);
@@ -121,7 +126,7 @@ public class TestAutoShoot extends LinearOpMode {
                 }
             }
             if (transitionState == masterRobot.transitionShooterMode.Pause) {
-                if (pauseTransitionTime.milliseconds() > 1500) {
+                if (pauseTransitionTime.milliseconds() > 500) {
                     transitionState = masterRobot.transitionShooterMode.Ready;
                     timeOut.reset();
                 } else {
@@ -175,6 +180,8 @@ public class TestAutoShoot extends LinearOpMode {
 //            telemetry.addData("trans state", transitionState.toString());
 //            telemetry.addData("how many shot", shot);
 //            ringTransition.telemetery();
+            telemetry.addData("loop time", loopTimer.milliseconds() - lastLoop);
+            lastLoop = loopTimer.milliseconds();
             disSensors.telemetry();
             telemetry.update();
         }
@@ -182,7 +189,7 @@ public class TestAutoShoot extends LinearOpMode {
         ringTransition.doNothingMode();
         shooter.loop();
         ringTransition.runMotors();
-        autoDrive.encoderDrive(0.5,17.5,17.5,10);
+//        autoDrive.encoderDrive(0.5,17.5,17.5,10);
 //        IMU.rotate(-90,0.3, 2);
 //        autoDrive.encoderDrive(0.5,24,24,10);
 //        autoDrive.encoderDrive(0.5,-8,-8,10);
