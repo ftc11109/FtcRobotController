@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.autonomouseMovement.AutoDrive;
 import org.firstinspires.ftc.teamcode.autonomouseMovement.ImuPIDTurning;
 import org.firstinspires.ftc.teamcode.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.subsystem.RingIntake;
@@ -59,10 +60,17 @@ import org.firstinspires.ftc.teamcode.subsystem.WebCam;
 @TeleOp(name = "master", group = "AA 11109")
 public class masterRobot extends OpMode {
     // Declare OpMode members.
+    private static final double INCHES_PER_100_MILLISECONDS = 1.5;
+
     enum transitionShooterMode {
-        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack
+        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack, ClearingBoth
     }
 
+    enum liningUpMode {
+        strafing, rotating, distancing, rotating2
+    }
+
+    AutoDrive autoDrive;
     RingIntake intake;
     Drive Drive;
     RingTranstition transtition;
@@ -83,10 +91,17 @@ public class masterRobot extends OpMode {
     boolean lastIsUpToSpeed = false;
     boolean justShot = false;
     transitionShooterMode transitionState = transitionShooterMode.Advancing;
+    liningUpMode liningState = liningUpMode.rotating2;
 
     boolean slowMode = false;
 
     double startHeading;
+    double camYDif;
+    double distanceByCam;
+    double camZDif;
+
+    boolean lineUpState = false;
+    boolean lastLineUpState = false;
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime controlTime = new ElapsedTime();
@@ -94,6 +109,7 @@ public class masterRobot extends OpMode {
     private ElapsedTime loopTimer = new ElapsedTime();
     private ElapsedTime polyIntakeWait = new ElapsedTime();
     private ElapsedTime timeOut = new ElapsedTime();
+    private ElapsedTime linningUpTime = new ElapsedTime();
     private double lastTime = 0;
 
     @Override
@@ -111,6 +127,8 @@ public class masterRobot extends OpMode {
         shooter.init();
         Imu = new ImuPIDTurning(telemetry, hardwareMap);
         Imu.init();
+        autoDrive = new AutoDrive(telemetry, Drive);
+        autoDrive.init();
 
         //        imu = new IMU(telemetry, hardwareMap);
 //        imu.init();
@@ -146,7 +164,52 @@ public class masterRobot extends OpMode {
 //        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, -imu.getHeading(AngleUnit.DEGREES) );
 
 // working robot centric mode
-        Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
+        if (controls.autoLineUp() && !lastLineUpState) {
+            lineUpState = !lineUpState;
+            liningState = liningUpMode.rotating2;
+            linningUpTime.reset();
+        }
+        lastLineUpState = controls.autoLineUp();
+
+        if (lineUpState) {
+            if (liningState == liningUpMode.rotating2) {
+                if (webCam.camHeading() < (90 + 20) && webCam.camHeading() > (90 - 20)) {
+                    Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
+                }
+                liningState = liningUpMode.strafing;
+                linningUpTime.reset();
+            }
+            if (liningState == liningUpMode.strafing) {
+                if (linningUpTime.milliseconds() > 500){
+                    camYDif = -24 - webCam.camY();
+                    distanceByCam = camYDif * 50 + 25;
+                    if (Math.abs(camYDif) > 1) {
+                        autoDrive.timeStrafe(0.75 * Math.signum(camYDif), Math.abs(distanceByCam));
+                    }
+                    liningState = liningUpMode.rotating;
+                    linningUpTime.reset();
+                }
+            }
+            if (liningState == liningUpMode.rotating) {
+                if (linningUpTime.milliseconds() > 500) {
+                    if (webCam.camHeading() < (90 + 20) && webCam.camHeading() > (90 - 20)) {
+                        Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
+                    }
+                    liningState = liningUpMode.distancing;
+                    linningUpTime.reset();
+                }
+            }
+            if (liningState == liningUpMode.distancing) {
+                if (linningUpTime.milliseconds() > 250) {
+                    camZDif = 6 - webCam.x;
+                    autoDrive.encoderDrive(0.3, camZDif, camZDif, 2);
+                    lineUpState = false;
+                }
+            }
+
+        } else {
+            Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
+        }
 
         if (controls.slowMode()) {
             slowMode = true;
@@ -166,7 +229,7 @@ public class masterRobot extends OpMode {
                 if (disSensors.isRingInEle()) {
                     transitionState = transitionShooterMode.Pause;
                     timeOut.reset();
-                } else if (disSensors.isRingInForward()){
+                } else if (disSensors.isRingInForward()) {
                     transitionState = transitionShooterMode.ClearingFront;
                     timeOut.reset();
                 } else {
@@ -184,8 +247,7 @@ public class masterRobot extends OpMode {
                 pauseTransitionTime.reset();
             }
             if (transitionState == transitionShooterMode.Ready) {
-                // TODO: controls.shootToggle()
-                if (shooter.isUpToSpeed() && true) {
+                if (shooter.isUpToSpeed() && controls.shootToggle()) {
                     transitionState = transitionShooterMode.Shooting;
                     shooter.ResetMinMax();
                     timeOut.reset();
@@ -196,7 +258,7 @@ public class masterRobot extends OpMode {
             if (transitionState == transitionShooterMode.Shooting) {
                 if (!shooter.isUpToSpeed()) {
                     timeOut.reset();
-                    if (disSensors.isRingInForward()){
+                    if (disSensors.isRingInForward()) {
                         transitionState = transitionShooterMode.ClearingFront;
                     } else {
                         transitionState = transitionShooterMode.ClearingBack;
@@ -206,7 +268,7 @@ public class masterRobot extends OpMode {
                 }
             }
             if (transitionState == transitionShooterMode.ClearingFront) {
-                if (disSensors.isRingInEle()|| timeOut.milliseconds() > 2000) {
+                if ((disSensors.isRingInEle() && !disSensors.isRingInForward()) || timeOut.milliseconds() > 2000) {
                     transitionState = transitionShooterMode.ClearingBack;
                     timeOut.reset();
                 } else {
@@ -214,8 +276,8 @@ public class masterRobot extends OpMode {
                     transtition.lowerDoNothing();
                 }
             }
-            if (transitionState == transitionShooterMode.ClearingBack){
-                if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000){
+            if (transitionState == transitionShooterMode.ClearingBack) {
+                if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000) {
                     transitionState = transitionShooterMode.Advancing;
                     timeOut.reset();
                 } else {
@@ -275,7 +337,6 @@ public class masterRobot extends OpMode {
 //        if (controls.autoShootToggle()) {
 //            autoShoot();
 //        }
-        // todo: yo remeber this
         if (controls.shooterSpinUp2() && !shooterSpinUpState && controlTime.milliseconds() > 250) {
             isShooterOn = !isShooterOn;
             shooter.setShootOn(isShooterOn);
@@ -289,10 +350,6 @@ public class masterRobot extends OpMode {
             controlTime.reset();
         }
 
-        if (controls.resetMinAndMax()) {
-            shooter.ResetMinMax();
-//            Imu.rotate( 90 - webCam.camHeading(), 0.4, 2);
-        }
 
         if (controls.decreaseShooterSpeed() && controlTime.milliseconds() > 500) {
             shooter.decreaseSpeed();

@@ -82,8 +82,8 @@ public class TestAutoShoot extends LinearOpMode {
 //        while () {
 //        }
 
-//        autoDrive.encoderDrive(0.5, 46.5, 46.5, 10);
-//        sleep(1000);
+        autoDrive.encoderDrive(0.5, 60, 60, 10);
+        sleep(1000);
 //        if (startHeading - IMU.getAngle() < 1 && startHeading - IMU.getAngle() > -1)
 //        IMU.rotate(10, 0.3, 10);
 //        IMU.rotate(startHeading - IMU.getAngle(), 0.3, 10);
@@ -100,12 +100,16 @@ public class TestAutoShoot extends LinearOpMode {
 //                ringTransition.runMotors();
 //            }
 //        }
-//        timer.reset();
-//        while (timer.milliseconds()> 2000){
-//            webCam.execute();
-//            webCamHeading = webCam.camHeading();
-//        }
-//        IMU.rotate(webCamHeading-90,0.4,2);
+        timer.reset();
+        while (timer.milliseconds()< 3000){
+            webCam.execute();
+            webCamHeading = webCam.camHeading();
+            telemetry.addData("do we see", webCam.isTargetVisible());
+            telemetry.update();
+        }
+        if (webCamHeading < (90+20) && webCamHeading > (90-20)){
+            IMU.rotate(87-webCamHeading,0.4,2);
+        }
 
 //        while (!shooter.isUpToSpeed()){
 //            shooter.autoSetShootOn(true);
@@ -115,6 +119,7 @@ public class TestAutoShoot extends LinearOpMode {
         timer.reset();
         timeOut.reset();
         while (timer.milliseconds() < 18000) {
+            webCam.execute();
             if (transitionState == masterRobot.transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle() || timeOut.milliseconds() > 4000) {
                     transitionState = masterRobot.transitionShooterMode.Pause;
@@ -189,7 +194,7 @@ public class TestAutoShoot extends LinearOpMode {
         ringTransition.doNothingMode();
         shooter.loop();
         ringTransition.runMotors();
-//        autoDrive.encoderDrive(0.5,17.5,17.5,10);
+        autoDrive.encoderDrive(0.5,7,7,10);
 //        IMU.rotate(-90,0.3, 2);
 //        autoDrive.encoderDrive(0.5,24,24,10);
 //        autoDrive.encoderDrive(0.5,-8,-8,10);

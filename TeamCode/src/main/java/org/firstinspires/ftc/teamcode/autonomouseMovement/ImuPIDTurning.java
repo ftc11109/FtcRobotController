@@ -173,7 +173,7 @@ public class ImuPIDTurning {
     public void rotate(double targetAngle, double power, double timeOutS) {
         double leftPower, rightPower;
         double error;
-        //LEFT IS - RIGHT is +
+        //LEFT IS + RIGHT is -
         // restart imu movement tracking.
         resetAngle();
 

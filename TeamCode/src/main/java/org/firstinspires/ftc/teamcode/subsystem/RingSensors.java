@@ -116,7 +116,7 @@ public class RingSensors {
     }
 
     public boolean isRingInForward(){
-        return getForwardSensorDistance() < 54;
+        return getForwardSensorDistance() < 69;
     }
     public void telemetry() {
 

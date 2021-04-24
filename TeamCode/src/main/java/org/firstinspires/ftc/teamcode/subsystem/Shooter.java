@@ -13,7 +13,7 @@ public class Shooter {
     private static final double P_RATE = 0.07;
 
     //power shot speed 1000
-    double targetShootSpeed = 1425.0;
+    double targetShootSpeed = 1400.0;
     double autoTargetShootSpeed = 1000.0;
     HardwareMap hardwareMap;
     Telemetry telemetry;

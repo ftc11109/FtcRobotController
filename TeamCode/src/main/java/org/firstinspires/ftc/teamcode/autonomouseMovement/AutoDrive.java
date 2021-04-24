@@ -96,9 +96,10 @@ public class AutoDrive {
 
     public void timeStrafe(double speed, double timeout) {
         strafeTime.reset();
-        while (strafeTime.seconds() < timeout) {
+        while (strafeTime.milliseconds() < timeout) {
             drive.drive( speed, 0, 0, false, 0);
         }
+        drive.drive(0,0,0,false,0);
     }
 
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeOutS) {

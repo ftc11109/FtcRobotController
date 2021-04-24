@@ -334,4 +334,11 @@ public class WebCam {
             Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
         return rotation.thirdAngle;
         }
+
+        public boolean isTargetVisible(){
+        return targetVisible;
+        }
+        public double camY(){
+        return y;
+        }
 }

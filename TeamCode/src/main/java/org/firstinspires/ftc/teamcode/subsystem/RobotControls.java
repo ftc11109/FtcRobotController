@@ -11,6 +11,7 @@ public class RobotControls {
     boolean shootState = false;
     boolean shootLastTrigger = false;
 
+
     boolean spinUpState = false;
     boolean spinUpStateLast = false;
 
@@ -103,8 +104,8 @@ public class RobotControls {
         return gamepad1.back;
     }
 
-    public boolean resetMinAndMax() {
-        return gamepad1.a;
+    public boolean autoLineUp() {
+    return gamepad1.a;
     }
 
 
