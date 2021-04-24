@@ -171,9 +171,9 @@ public class masterRobot extends OpMode {
         }
         lastLineUpState = controls.autoLineUp();
 
-        if (lineUpState) {
+        if (lineUpState && webCam.isTargetVisible()) {
             if (liningState == liningUpMode.rotating2) {
-                if (webCam.camHeading() < (90 + 20) && webCam.camHeading() > (90 - 20)) {
+                if (Math.abs(87 - webCam.camHeading()) > 1) {
                     Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
                 }
                 liningState = liningUpMode.strafing;
@@ -183,7 +183,7 @@ public class masterRobot extends OpMode {
                 if (linningUpTime.milliseconds() > 500){
                     camYDif = -24 - webCam.camY();
                     distanceByCam = camYDif * 50 + 25;
-                    if (Math.abs(camYDif) > 1) {
+                    if (Math.abs(camYDif) > 0.5) {
                         autoDrive.timeStrafe(0.75 * Math.signum(camYDif), Math.abs(distanceByCam));
                     }
                     liningState = liningUpMode.rotating;
@@ -192,7 +192,7 @@ public class masterRobot extends OpMode {
             }
             if (liningState == liningUpMode.rotating) {
                 if (linningUpTime.milliseconds() > 500) {
-                    if (webCam.camHeading() < (90 + 20) && webCam.camHeading() > (90 - 20)) {
+                    if (Math.abs(87 - webCam.camHeading()) > 1) {
                         Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
                     }
                     liningState = liningUpMode.distancing;
@@ -293,13 +293,17 @@ public class masterRobot extends OpMode {
 
         if (disSensors.isRingInIntake() && !controls.shootToggle()) {
             if (polyIntakeWait.milliseconds() > 500) {
-                transtition.intakeTransitionMode();
+                transtition.lowerTranistionIntake();
             }
         } else {
             polyIntakeWait.reset();
         }
         if (disSensors.isRingInEle() && !controls.shootToggle()) {
             transtition.doNothingMode();
+        }
+
+        if (controls.lowerPolycordIntake()){
+            transtition.lowerTranistionIntake();
         }
 
         if (controls.spitOut()) {
@@ -366,7 +370,7 @@ public class masterRobot extends OpMode {
 //        lastTime = loopTimer.milliseconds();
         disSensors.telemetry();
 //        imu.telemetry();
-//        transtition.telemetery();
+        transtition.telemetery();
 //        intake.telemetry();
 //        shooter.telemetry();
 //        telemetry.addData("trans state", transitionState);

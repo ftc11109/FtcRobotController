@@ -113,6 +113,10 @@ public class RingTranstition {
         runLowerMotor(0);
     }
 
+    public void lowerTranistionIntake(){
+        runLowerMotor(LOWER_BELT_INTAKE_SPEED);
+    }
+
     public void doNothingMode() {
         runLowerMotor(0);
         runUpperMotor(0);

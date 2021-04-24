@@ -43,10 +43,10 @@ public class RobotControls {
     }
 
     public boolean shootToggle() {
-        if (gamepad1.right_trigger > 0.5 && !shootLastTrigger){
+        if (gamepad2.right_trigger > 0.5 && !shootLastTrigger) {
             shootState = !shootState;
         }
-        shootLastTrigger = gamepad1.right_trigger > 0.5;
+        shootLastTrigger = gamepad2.right_trigger > 0.5;
         return shootState;
     }
 
@@ -54,18 +54,25 @@ public class RobotControls {
         return gamepad2.dpad_up;
     }
 
+    public boolean lowerPolycordIntake(){
+        return gamepad2.right_bumper;
+    }
+
     public boolean spitOut() {
         return gamepad2.dpad_down;
     }
 
     public boolean shooterSpinUp() {
-        if (gamepad1.left_trigger > 0.5){
+        if (gamepad1.left_trigger > 0.5) {
             shootState = false;
         }
         return gamepad1.left_trigger > 0.5;
     }
 
-    public boolean shooterSpinUp2(){
+    public boolean shooterSpinUp2() {
+        if (gamepad2.left_trigger > 0.5){
+            shootState = false;
+        }
         return gamepad2.left_trigger > 0.5;
     }
 
@@ -78,7 +85,7 @@ public class RobotControls {
     }
 
     public boolean autoShootToggle() {
-        if (gamepad1.x && !autoShootLastTrigger){
+        if (gamepad1.x && !autoShootLastTrigger) {
             autoShootState = !autoShootState;
         }
         autoShootLastTrigger = gamepad1.x;
@@ -105,7 +112,7 @@ public class RobotControls {
     }
 
     public boolean autoLineUp() {
-    return gamepad1.a;
+        return gamepad1.a;
     }
 
 
