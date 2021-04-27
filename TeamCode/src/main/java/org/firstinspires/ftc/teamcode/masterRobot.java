@@ -154,6 +154,9 @@ public class masterRobot extends OpMode {
         runtime.reset();
     }
 
+    public double strafeDistanceToTime(double distance){
+                return  -0.756 * distance * distance + 52.7 * distance + 149;
+    }
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -174,15 +177,15 @@ public class masterRobot extends OpMode {
         if (lineUpState && webCam.isTargetVisible()) {
             if (liningState == liningUpMode.rotating2) {
                 if (Math.abs(87 - webCam.camHeading()) > 1) {
-                    Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
+                    Imu.rotate(87 - webCam.camHeading(), 0.3, 2);
                 }
                 liningState = liningUpMode.strafing;
                 linningUpTime.reset();
             }
             if (liningState == liningUpMode.strafing) {
-                if (linningUpTime.milliseconds() > 500){
-                    camYDif = -24 - webCam.camY();
-                    distanceByCam = camYDif * 50 + 25;
+                if (linningUpTime.milliseconds() > 500) {
+                    camYDif = -26 - webCam.camY();
+                    distanceByCam = strafeDistanceToTime(camYDif);
                     if (Math.abs(camYDif) > 0.5) {
                         autoDrive.timeStrafe(0.75 * Math.signum(camYDif), Math.abs(distanceByCam));
                     }
@@ -193,7 +196,7 @@ public class masterRobot extends OpMode {
             if (liningState == liningUpMode.rotating) {
                 if (linningUpTime.milliseconds() > 500) {
                     if (Math.abs(87 - webCam.camHeading()) > 1) {
-                        Imu.rotate(87 - webCam.camHeading(), 0.4, 2);
+                        Imu.rotate(87 - webCam.camHeading(), 0.3, 2);
                     }
                     liningState = liningUpMode.distancing;
                     linningUpTime.reset();
@@ -201,7 +204,7 @@ public class masterRobot extends OpMode {
             }
             if (liningState == liningUpMode.distancing) {
                 if (linningUpTime.milliseconds() > 250) {
-                    camZDif = 6 - webCam.x;
+                    camZDif = 8 - webCam.x;
                     autoDrive.encoderDrive(0.3, camZDif, camZDif, 2);
                     lineUpState = false;
                 }
@@ -209,6 +212,17 @@ public class masterRobot extends OpMode {
 
         } else {
             Drive.drive(controls.strafe(), controls.forward(), controls.turn(), slowMode, 0);
+        }
+
+
+        if (gamepad2.x) {
+            autoDrive.timeStrafe(0.75, strafeDistanceToTime(2));
+        }
+        if (gamepad2.a) {
+            autoDrive.timeStrafe(0.75, strafeDistanceToTime(5));
+        }
+        if (gamepad2.y) {
+            autoDrive.timeStrafe(0.75, strafeDistanceToTime(10));
         }
 
         if (controls.slowMode()) {
@@ -302,7 +316,7 @@ public class masterRobot extends OpMode {
             transtition.doNothingMode();
         }
 
-        if (controls.lowerPolycordIntake()){
+        if (controls.lowerPolycordIntake()) {
             transtition.lowerTranistionIntake();
         }
 
