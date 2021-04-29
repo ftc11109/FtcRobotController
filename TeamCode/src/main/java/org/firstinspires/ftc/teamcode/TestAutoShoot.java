@@ -51,6 +51,10 @@ public class TestAutoShoot extends LinearOpMode {
 
     double lastLoop;
 
+    public double strafeCurve(double distance){
+        return -0.756*distance*distance+52.689*distance+148.74;
+    }
+
     // called when init button is  pressed.
     @Override
     public void runOpMode() throws InterruptedException {
@@ -123,7 +127,7 @@ public class TestAutoShoot extends LinearOpMode {
                 if (liningState == liningUpMode.strafing) {
                     if (linningUpTime.milliseconds() > 1000) {
                         double camYDif = -26 - webCam.camY();
-                        double distanceByCam = camYDif * 50 + 25;
+                        double distanceByCam = strafeCurve(camYDif);
                         if (Math.abs(camYDif) > 0.5) {
                             autoDrive.timeStrafe(0.75 * Math.signum(camYDif), Math.abs(distanceByCam));
                         }
