@@ -63,7 +63,7 @@ public class masterRobot extends OpMode {
     private static final double INCHES_PER_100_MILLISECONDS = 1.5;
 
     enum transitionShooterMode {
-        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack, ClearingBoth
+        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack, ClearingMid
     }
 
     enum liningUpMode {

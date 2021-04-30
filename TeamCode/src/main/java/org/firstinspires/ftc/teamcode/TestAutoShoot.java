@@ -30,7 +30,7 @@ public class TestAutoShoot extends LinearOpMode {
     private ElapsedTime linningUpTime;
 
     enum transitionShooterMode {
-        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack
+        Advancing, Pause, Ready, Shooting, ClearingFront, ClearingBack, clearingMid
     }
 
     enum liningUpMode {
@@ -95,8 +95,8 @@ public class TestAutoShoot extends LinearOpMode {
 //        while () {
 //        }
 
-        autoDrive.encoderDrive(0.5, 60, 60, 10);
-        sleep(1000);
+        autoDrive.encoderDrive(0.6, 60, 60, 10);
+        sleep(650);
 //        if (startHeading - IMU.getAngle() < 1 && startHeading - IMU.getAngle() > -1)
 //        IMU.rotate(10, 0.3, 10);
 //        IMU.rotate(startHeading - IMU.getAngle(), 0.3, 10);
@@ -114,7 +114,7 @@ public class TestAutoShoot extends LinearOpMode {
 //            }
 //        }
         timer.reset();
-        while (timer.milliseconds() < 8000) {
+        while (timer.milliseconds() < 7000) {
             webCam.execute();
             if (webCam.isTargetVisible()) {
                 if (liningState == liningUpMode.rotating2) {
@@ -125,7 +125,7 @@ public class TestAutoShoot extends LinearOpMode {
                     linningUpTime.reset();
                 }
                 if (liningState == liningUpMode.strafing) {
-                    if (linningUpTime.milliseconds() > 1000) {
+                    if (linningUpTime.milliseconds() > 250) {
                         double camYDif = -26 - webCam.camY();
                         double distanceByCam = strafeCurve(camYDif);
                         if (Math.abs(camYDif) > 0.5) {
@@ -136,7 +136,7 @@ public class TestAutoShoot extends LinearOpMode {
                     }
                 }
                 if (liningState == liningUpMode.rotating) {
-                    if (linningUpTime.milliseconds() > 1000) {
+                    if (linningUpTime.milliseconds() > 250) {
                         if (Math.abs(87 - webCam.camHeading()) > 1) {
                             IMU.rotate(87 - webCam.camHeading(), 0.4, 2);
                         }
@@ -145,10 +145,11 @@ public class TestAutoShoot extends LinearOpMode {
                     }
                 }
                 if (liningState == liningUpMode.distancing) {
-                    if (linningUpTime.milliseconds() > 1000) {
+                    if (linningUpTime.milliseconds() > 250) {
                         double camZDif = 8 - webCam.x;
                         autoDrive.encoderDrive(0.3, camZDif, camZDif, 2);
                         liningState = liningUpMode.rotating3;
+                        break;
                     }
                 }
             }
@@ -160,7 +161,7 @@ public class TestAutoShoot extends LinearOpMode {
         shooter.setShootOn(true);
         timer.reset();
         timeOut.reset();
-        while (timer.milliseconds() < 18000) {
+        while (timer.milliseconds() < 16500) {
             webCam.execute();
             if (transitionState == masterRobot.transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle() || timeOut.milliseconds() > 4000) {
@@ -210,6 +211,7 @@ public class TestAutoShoot extends LinearOpMode {
                     timeOut.reset();
                 } else {
                     ringTransition.upperTransitionOuttake();
+                    ringTransition.lowerDoNothing();
                 }
             }
             if (transitionState == masterRobot.transitionShooterMode.ClearingBack) {
@@ -218,6 +220,7 @@ public class TestAutoShoot extends LinearOpMode {
                     timeOut.reset();
                 } else {
                     ringTransition.upperTransitionOuttake();
+                    ringTransition.lowerDoNothing();
                 }
             }
             ringTransition.runMotors();
