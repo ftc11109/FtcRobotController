@@ -46,8 +46,8 @@ public class TestAutoShoot extends LinearOpMode {
     Drive drive;
     RingTranstition ringTransition;
     RingSensors disSensors;
-    masterRobot.transitionShooterMode transitionState = masterRobot.transitionShooterMode.Advancing;
-    liningUpMode liningState = liningUpMode.rotating2;
+    transitionShooterMode transitionState = transitionShooterMode.Ready;
+    liningUpMode liningState = liningUpMode.strafing;
 
     double lastLoop;
 
@@ -114,19 +114,14 @@ public class TestAutoShoot extends LinearOpMode {
 //            }
 //        }
         timer.reset();
+        linningUpTime.reset();
+        shooter.setShootOn(true);
         while (timer.milliseconds() < 7000) {
             webCam.execute();
             if (webCam.isTargetVisible()) {
-                if (liningState == liningUpMode.rotating2) {
-                    if (Math.abs(87 - webCam.camHeading()) > 1) {
-                        IMU.rotate(87 - webCam.camHeading(), 0.4, 2);
-                    }
-                    liningState = liningUpMode.strafing;
-                    linningUpTime.reset();
-                }
                 if (liningState == liningUpMode.strafing) {
                     if (linningUpTime.milliseconds() > 250) {
-                        double camYDif = -26 - webCam.camY();
+                        double camYDif = -26.5 - webCam.camY();
                         double distanceByCam = strafeCurve(camYDif);
                         if (Math.abs(camYDif) > 0.5) {
                             autoDrive.timeStrafe(0.75 * Math.signum(camYDif), Math.abs(distanceByCam));
@@ -136,7 +131,7 @@ public class TestAutoShoot extends LinearOpMode {
                     }
                 }
                 if (liningState == liningUpMode.rotating) {
-                    if (linningUpTime.milliseconds() > 250) {
+                    if (linningUpTime.milliseconds() > 500) {
                         if (Math.abs(87 - webCam.camHeading()) > 1) {
                             IMU.rotate(87 - webCam.camHeading(), 0.4, 2);
                         }
@@ -158,24 +153,24 @@ public class TestAutoShoot extends LinearOpMode {
 //            shooter.autoSetShootOn(true);
 //            shooter.loop();
 //        }
-        shooter.setShootOn(true);
+        transitionState = transitionShooterMode.Ready;
         timer.reset();
         timeOut.reset();
-        while (timer.milliseconds() < 16500) {
+        while (timer.milliseconds() < 20500) {
             webCam.execute();
-            if (transitionState == masterRobot.transitionShooterMode.Advancing) {
+            if (transitionState == transitionShooterMode.Advancing) {
                 if (disSensors.isRingInEle() || timeOut.milliseconds() > 4000) {
-                    transitionState = masterRobot.transitionShooterMode.Pause;
+                    transitionState = transitionShooterMode.Pause;
                     timeOut.reset();
                 } else if (disSensors.isRingInForward()) {
-                    transitionState = masterRobot.transitionShooterMode.ClearingFront;
+                    transitionState = transitionShooterMode.ClearingFront;
                 } else {
                     ringTransition.advancingTransitionMode();
                 }
             }
-            if (transitionState == masterRobot.transitionShooterMode.Pause) {
+            if (transitionState == transitionShooterMode.Pause) {
                 if (pauseTransitionTime.milliseconds() > 500) {
-                    transitionState = masterRobot.transitionShooterMode.Ready;
+                    transitionState = transitionShooterMode.Ready;
                     timeOut.reset();
                 } else {
                     ringTransition.doNothingMode();
@@ -183,40 +178,40 @@ public class TestAutoShoot extends LinearOpMode {
             } else {
                 pauseTransitionTime.reset();
             }
-            if (transitionState == masterRobot.transitionShooterMode.Ready) {
-                if (shooter.isUpToSpeed() || timeOut.milliseconds() > 2000) {
-                    transitionState = masterRobot.transitionShooterMode.Shooting;
+            if (transitionState == transitionShooterMode.Ready) {
+                if (shooter.isUpToSpeed() || timeOut.milliseconds() > 5000) {
+                    transitionState = transitionShooterMode.Shooting;
                     timeOut.reset();
                 } else {
                     ringTransition.doNothingMode();
                 }
             }
-            if (transitionState == masterRobot.transitionShooterMode.Shooting) {
+            if (transitionState == transitionShooterMode.Shooting) {
                 if (!shooter.isUpToSpeed() || timeOut.milliseconds() > 2000) {
 //                    shot = shot + 1;
                     timeOut.reset();
                     if (disSensors.isRingInForward()) {
-                        transitionState = masterRobot.transitionShooterMode.ClearingFront;
+                        transitionState = transitionShooterMode.ClearingFront;
                     } else {
-                        transitionState = masterRobot.transitionShooterMode.ClearingBack;
+                        transitionState = transitionShooterMode.ClearingBack;
                     }
                 } else {
                     ringTransition.shootingTransitionMode();
                 }
             }
-            if (transitionState == masterRobot.transitionShooterMode.ClearingFront) {
+            if (transitionState == transitionShooterMode.ClearingFront) {
 
                 if ((disSensors.isRingInEle() && !disSensors.isRingInForward()) || timeOut.milliseconds() > 2000) {
-                    transitionState = masterRobot.transitionShooterMode.ClearingBack;
+                    transitionState = transitionShooterMode.ClearingBack;
                     timeOut.reset();
                 } else {
                     ringTransition.upperTransitionOuttake();
                     ringTransition.lowerDoNothing();
                 }
             }
-            if (transitionState == masterRobot.transitionShooterMode.ClearingBack) {
+            if (transitionState == transitionShooterMode.ClearingBack) {
                 if (!disSensors.isRingInEle() || timeOut.milliseconds() > 2000) {
-                    transitionState = masterRobot.transitionShooterMode.Advancing;
+                    transitionState = transitionShooterMode.Advancing;
                     timeOut.reset();
                 } else {
                     ringTransition.upperTransitionOuttake();
@@ -225,15 +220,10 @@ public class TestAutoShoot extends LinearOpMode {
             }
             ringTransition.runMotors();
             shooter.loop();
-            shooter.telemetry();
             //            telemetry.addData("im HERE", true);
 //            telemetry.addData("trans state", transitionState.toString());
 //            telemetry.addData("how many shot", shot);
 //            ringTransition.telemetery();
-            telemetry.addData("loop time", loopTimer.milliseconds() - lastLoop);
-            lastLoop = loopTimer.milliseconds();
-            disSensors.telemetry();
-            telemetry.update();
         }
         shooter.setShootOn(false);
         ringTransition.doNothingMode();
